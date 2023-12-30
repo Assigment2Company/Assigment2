@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<project version="2">
+	<pipeline>
+		<pass name="Simple" type="shader" active="true" patchverts="1">
+			<shader type="vs" path="shaders\Shaders_SimpleVS.glsl" entry="main" />
+			<shader type="ps" path="shaders\Shaders_SimplePS.glsl" entry="main" />
+			<inputlayout>
+				<item value="Position" semantic="POSITION" />
+				<item value="Normal" semantic="NORMAL" />
+				<item value="Texcoord" semantic="TEXCOORD0" />
+			</inputlayout>
+			<rendertexture />
+			<items>
+				<item name="Duck" type="model">
+					<filepath>SecondAssignmentModels\Duck\Duck.gltf</filepath>
+					<grouponly>false</grouponly>
+					<scaleX>0.100000001</scaleX>
+					<scaleY>0.100000001</scaleY>
+					<scaleZ>0.100000001</scaleZ>
+					<y>-6.2962532</y>
+				</item>
+				<item name="DollHouse" type="model">
+					<filepath>SecondAssignmentModels\DollHouse\Dollhouse.gltf</filepath>
+					<grouponly>false</grouponly>
+					<x>-6.91949844</x>
+					<y>4.39190578</y>
+					<z>7.17367554</z>
+				</item>
+			</items>
+			<itemvalues />
+			<variables>
+				<variable type="float4x4" name="model" system="GeometryTransform" />
+				<variable type="float4x4" name="view" system="View" />
+				<variable type="float4x4" name="proj" system="Projection" />
+				<variable type="float3" name="lightDir">
+					<row>
+						<value>0</value>
+						<value>-1</value>
+						<value>1</value>
+					</row>
+				</variable>
+				<variable type="float3" name="cameraPos" system="CameraPosition3" />
+				<variable type="float3" name="ambientColor">
+					<row>
+						<value>0.705024302</value>
+						<value>0.703981876</value>
+						<value>0.675315022</value>
+					</row>
+				</variable>
+				<variable type="float3" name="lightColor">
+					<row>
+						<value>0.461912453</value>
+						<value>0.461907834</value>
+						<value>0.461907834</value>
+					</row>
+				</variable>
+				<variable type="float" name="Kd">
+					<row>
+						<value>0.800000012</value>
+					</row>
+				</variable>
+				<variable type="float" name="Ks">
+					<row>
+						<value>0.349999994</value>
+					</row>
+				</variable>
+				<variable type="float" name="shininess">
+					<row>
+						<value>32</value>
+					</row>
+				</variable>
+			</variables>
+			<macros />
+		</pass>
+	</pipeline>
+	<objects>
+		<object type="texture" path="SecondAssignmentModels\Duck\DuckCM.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="0" name="Simple" />
+		</object>
+		<object type="texture" path="SecondAssignmentModels\DollHouse\DollhouseDiffuse.png" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="1" name="Simple" />
+		</object>
+	</objects>
+	<cameras />
+	<settings>
+		<entry type="property" name="DollHouse" item="pipe" />
+		<entry type="file" name="Simple" shader="ps" />
+		<entry type="file" name="Simple" shader="vs" />
+		<entry type="pinned" name="lightDir" owner="Simple" />
+		<entry type="pinned" name="ambientColor" owner="Simple" />
+		<entry type="pinned" name="lightColor" owner="Simple" />
+		<entry type="pinned" name="Kd" owner="Simple" />
+		<entry type="pinned" name="Ks" owner="Simple" />
+		<entry type="pinned" name="shininess" owner="Simple" />
+		<entry type="camera" fp="false">
+			<distance>44</distance>
+			<pitch>45</pitch>
+			<yaw>331</yaw>
+			<roll>360</roll>
+		</entry>
+		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
+		<entry type="usealpha" val="false" />
+		<entry type="bkpt" file="C:/Users/Marc Belmonte/Projects/MasterGameDev/Practica/ShaderED/shaders/Shaders_SimplePS.glsl" line="20" use_cond="false" cond="" enabled="true" />
+	</settings>
+	<plugindata />
+</project>
