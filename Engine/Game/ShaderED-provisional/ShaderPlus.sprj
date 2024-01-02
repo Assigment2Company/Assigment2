@@ -17,6 +17,7 @@
 					<scaleX>0.100000001</scaleX>
 					<scaleY>0.100000001</scaleY>
 					<scaleZ>0.100000001</scaleZ>
+					<y>-4.84870338</y>
 				</item>
 			</items>
 			<itemvalues />
@@ -39,21 +40,21 @@
 				</variable>
 				<variable type="float" name="indexRefraction">
 					<row>
-						<value>0.649999976</value>
+						<value>0.277319998</value>
 					</row>
 				</variable>
 				<variable type="float3" name="ambientColor">
 					<row>
-						<value>0.227799237</value>
-						<value>0.197895095</value>
-						<value>0.197895095</value>
+						<value>0.185328186</value>
+						<value>0.185326323</value>
+						<value>0.185326323</value>
 					</row>
 				</variable>
 				<variable type="float3" name="lightColor">
 					<row>
-						<value>1</value>
-						<value>0.999989986</value>
-						<value>0.999989986</value>
+						<value>0.98455596</value>
+						<value>0.984546125</value>
+						<value>0.984546125</value>
 					</row>
 				</variable>
 				<variable type="float" name="lightIntensity">
@@ -83,8 +84,8 @@
 		<entry type="pinned" name="lightIntensity" owner="Plus" />
 		<entry type="camera" fp="false">
 			<distance>44</distance>
-			<pitch>24</pitch>
-			<yaw>298</yaw>
+			<pitch>21</pitch>
+			<yaw>327</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

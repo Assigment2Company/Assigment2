@@ -1,4 +1,7 @@
 #version 440
+
+#extension GL_ARB_shading_language_include : require
+
 in vec3 position;
 in vec3 normal;
 in vec2 uv0;
@@ -30,9 +33,18 @@ void main() {
 	
 	vec3 Li = lightIntensity * lightColor;  //Incoming radiance
 	
-	vec3 phongColor = ((diffuseColor*(1-RF0))/ 3.142 + ((shininess +2) / 2*3.142)* RFOi * VdotRpown) 
+	vec3 color = ((diffuseColor*(1-RF0))/ 3.142 + ((shininess +2) / 2*3.142)* RFOi * VdotRpown) 
 					  * Li * NdotL;
 	
+	
+	for(int i=0; i<3; i++){
+		if(color[i] < 0){
+			color[i] = 0;
+		}
+	}
+					  				  				  
+	vec3 finalColor = ambientColor * diffuseColor + color;
+	
 	//Output
-	outColor = vec4(phongColor, 1.0f);
+	outColor = vec4(finalColor, 1.0f);
 }
