@@ -28,7 +28,7 @@
 					<row>
 						<value>-1</value>
 						<value>-1</value>
-						<value>1</value>
+						<value>0</value>
 					</row>
 				</variable>
 				<variable type="float3" name="cameraPos" system="CameraPosition3" />
@@ -66,12 +66,13 @@
 		</pass>
 	</pipeline>
 	<objects>
-		<object type="texture" path="..\..\Downloads\SHADERed\SecondAssignmentModels\Duck\DuckCM.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+		<object type="texture" path="SecondAssignmentModels\Duck\DuckCM.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
 			<bind slot="0" name="Plus" />
 		</object>
 	</objects>
 	<cameras />
 	<settings>
+		<entry type="property" name="C:\Users\marcg\Desktop\Master\Assignatures\3D Game Engine\Engine A2\Assigment2\Engine\Game\ShaderED-provisional\SecondAssignmentModels\Duck\DuckCM.png" item="image3D" />
 		<entry type="file" name="Plus" shader="ps" />
 		<entry type="file" name="Plus" shader="vs" />
 		<entry type="pinned" name="lightDir" owner="Plus" />
@@ -81,9 +82,9 @@
 		<entry type="pinned" name="indexRefraction" owner="Plus" />
 		<entry type="pinned" name="Li" owner="Plus" />
 		<entry type="camera" fp="false">
-			<distance>50</distance>
-			<pitch>25</pitch>
-			<yaw>296</yaw>
+			<distance>49</distance>
+			<pitch>40</pitch>
+			<yaw>257</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
