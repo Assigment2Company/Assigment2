@@ -9,7 +9,7 @@ uniform vec3 ambientColor;
 uniform vec3 lightColor;
 uniform float shininess;
 uniform float indexRefraction; //Refraction of the material
-uniform float Li; //Incoming radiance
+uniform float lightIntensity;
 uniform sampler2D diffuseTexture;
 
 out vec4 outColor;
@@ -23,12 +23,15 @@ void main() {
 	
 	vec3 R = reflect(L,N);
 	vec3 V = normalize(cameraPos - position); //Vire direction
-	float VdotRpown = pow(max(dot(V,R), 0.0), shininess);
+	float VdotRpown = pow(max(dot(V,R), 0), shininess);
 	
 	float RF0 = pow((indexRefraction-1)/(indexRefraction+1), 2);
 	float RFOi = RF0 + (1-RF0) * pow(1-NdotL,5);
 	
-	vec3 phongColor = ((diffuseColor*(1-RF0))/ 3.142 + ((shininess +2) / 2*3.142)* RFOi * VdotRpown) * lightColor* Li * NdotL;
+	vec3 Li = lightIntensity * lightColor;  //Incoming radiance
+	
+	vec3 phongColor = ((diffuseColor*(1-RF0))/ 3.142 + ((shininess +2) / 2*3.142)* RFOi * VdotRpown) 
+					  * Li * NdotL;
 	
 	//Output
 	outColor = vec4(phongColor, 1.0f);
