@@ -3,6 +3,7 @@
 
 //CLASS FOR TESTING PURPOSE
 #include "MeshRendererComponent.h"
+#include "TestMaterial.h"
 
 Component* Component::CreateComponent(ComponentType type, GameObject* owner) {
     Component* newComponent = nullptr;
@@ -17,8 +18,9 @@ Component* Component::CreateComponent(ComponentType type, GameObject* owner) {
         newComponent->mType = type;
         break;
     case ComponentType::MATERIAL:
-        //ONLY FOR TEST PURPOSE            
-        newComponent = new MeshRendererComponent();
+        //ONLY FOR TEST PURPOSE   
+        //newComponent = new MeshRendererComponent();         
+        newComponent = new TestMaterial();
         newComponent->mType = type;
         break;
     default:
