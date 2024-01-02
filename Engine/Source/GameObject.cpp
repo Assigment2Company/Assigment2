@@ -406,9 +406,6 @@ void GameObject::ShowComponents(Component* component) {
 		default:
 			break;
 		}
-
-		// Activate Delete Popup for every Component
-		DeletePopup(component);
 	}
 }
 
@@ -417,10 +414,13 @@ void GameObject::DrawMeshRenderer(Component* component) {
 
 	if (ImGui::CollapsingHeader("MeshRenderer", ImGuiTreeNodeFlags_DefaultOpen)) {
 		// SIMULATED CONTENT FOR TEST PURPOSES:
-		ImGui::Text("Model: Cube.obj (TEST)"); componentLines++;
-		ImGui::Text("Material: DefaultMaterial (TEST)"); componentLines++;
-		ImGui::Text("Shader: StandardShader (TEST)"); componentLines++;
+		ImGui::Text("Model: Cube.obj (TEST)");
+		ImGui::Text("Material: DefaultMaterial (TEST)");
+		ImGui::Text("Shader: StandardShader (TEST)");
 	}
+
+	// Activate Delete Popup for every Component
+	DeletePopup(component, 55);
 }
 
 void GameObject::DrawMaterial(Component* component) {
@@ -428,18 +428,17 @@ void GameObject::DrawMaterial(Component* component) {
 
 	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen)) {
 		// SIMULATED CONTENT FOR TEST PURPOSES:
-		ImGui::Text("Color: (R: 255, G: 0, B: 0) (TEST)"); componentLines++;
-		ImGui::Text("Texture: DefaultTexture (TEST)"); componentLines++;
+		ImGui::Text("Color: (R: 255, G: 0, B: 0) (TEST)");
+		ImGui::Text("Texture: DefaultTexture (TEST)");
 	}
+
+	DeletePopup(component, 38);
 }
 
-void GameObject::DeletePopup(Component* component) {
-	// Calculate the header position using the number of text lines of the component
-	int headerPosition = componentLines * 13.5; //16
-	componentLines = 1; // Reset to start by counting the header
-
+void GameObject::DeletePopup(Component* component, int headerPosition) {	
 	// Create a unique identifier for the Delete Popup
-	ImGui::PushID(componentIndex);
+	ImGui::PushID(componentIndex); // Work correctly without this function, its necessary?
+	
 	std::string popupID = "ComponentOptions_" + std::to_string(componentIndex);
 
 	ImVec2 min = ImGui::GetItemRectMin();
@@ -469,6 +468,6 @@ void GameObject::DeletePopup(Component* component) {
 		ImGui::EndPopup();
 	}
 
-	ImGui::PopID(); // Reset ID for next component
+	ImGui::PopID(); // Reset ID for next component PushID
 	componentIndex++;
 }

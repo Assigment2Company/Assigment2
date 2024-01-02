@@ -60,7 +60,6 @@ private:
 	float3 mScale;
 	bool mIsEnabled;
 	int componentIndex;
-	int componentLines = 1; //Start by counting the header
 	bool hasMeshRenderer = false;
 	bool hasMaterial = false;
 
@@ -69,6 +68,6 @@ private:
 	void ShowComponents(Component* component);
 	void DrawMeshRenderer(Component* component);
 	void DrawMaterial(Component* component);
-	void DeletePopup(Component* component);
+	void DeletePopup(Component* component, int headerPosition);
 };
 
