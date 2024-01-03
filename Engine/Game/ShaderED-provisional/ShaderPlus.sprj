@@ -25,6 +25,24 @@
 				<variable type="float4x4" name="proj" system="Projection" />
 				<variable type="float4x4" name="view" system="View" />
 				<variable type="float4x4" name="model" system="GeometryTransform" />
+				<variable type="float3" name="cameraPos" system="CameraPosition3" />
+				<variable type="float" name="shininess">
+					<row>
+						<value>10</value>
+					</row>
+				</variable>
+				<variable type="float" name="indexRefraction">
+					<row>
+						<value>0.850000024</value>
+					</row>
+				</variable>
+				<variable type="float3" name="ambientColor">
+					<row>
+						<value>0.308880329</value>
+						<value>0.30887723</value>
+						<value>0.30887723</value>
+					</row>
+				</variable>
 				<variable type="float3" name="lightDir">
 					<row>
 						<value>-1</value>
@@ -32,34 +50,35 @@
 						<value>0</value>
 					</row>
 				</variable>
-				<variable type="float3" name="cameraPos" system="CameraPosition3" />
-				<variable type="float" name="shininess">
+				<variable type="float" name="lightIntensity">
 					<row>
-						<value>100</value>
-					</row>
-				</variable>
-				<variable type="float" name="indexRefraction">
-					<row>
-						<value>0.277319998</value>
-					</row>
-				</variable>
-				<variable type="float3" name="ambientColor">
-					<row>
-						<value>0.185328186</value>
-						<value>0.185326323</value>
-						<value>0.185326323</value>
+						<value>3</value>
 					</row>
 				</variable>
 				<variable type="float3" name="lightColor">
 					<row>
-						<value>0.98455596</value>
-						<value>0.984546125</value>
-						<value>0.984546125</value>
+						<value>1</value>
+						<value>0</value>
+						<value>0</value>
 					</row>
 				</variable>
-				<variable type="float" name="lightIntensity">
+				<variable type="float3" name="lightDir2">
 					<row>
-						<value>5</value>
+						<value>1</value>
+						<value>0</value>
+						<value>-1</value>
+					</row>
+				</variable>
+				<variable type="float3" name="lightColor2">
+					<row>
+						<value>0.214285612</value>
+						<value>1</value>
+						<value>0</value>
+					</row>
+				</variable>
+				<variable type="float" name="lightIntensity2">
+					<row>
+						<value>3</value>
 					</row>
 				</variable>
 			</variables>
@@ -76,16 +95,19 @@
 		<entry type="property" name="Simple2" item="pipe" />
 		<entry type="file" name="Plus" shader="ps" />
 		<entry type="file" name="Plus" shader="vs" />
-		<entry type="pinned" name="lightDir" owner="Plus" />
 		<entry type="pinned" name="shininess" owner="Plus" />
 		<entry type="pinned" name="ambientColor" owner="Plus" />
-		<entry type="pinned" name="lightColor" owner="Plus" />
 		<entry type="pinned" name="indexRefraction" owner="Plus" />
+		<entry type="pinned" name="lightDir" owner="Plus" />
 		<entry type="pinned" name="lightIntensity" owner="Plus" />
+		<entry type="pinned" name="lightColor" owner="Plus" />
+		<entry type="pinned" name="lightDir2" owner="Plus" />
+		<entry type="pinned" name="lightColor2" owner="Plus" />
+		<entry type="pinned" name="lightIntensity2" owner="Plus" />
 		<entry type="camera" fp="false">
-			<distance>44</distance>
-			<pitch>21</pitch>
-			<yaw>327</yaw>
+			<distance>48</distance>
+			<pitch>13</pitch>
+			<yaw>319</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
