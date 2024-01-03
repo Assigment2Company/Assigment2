@@ -1,13 +1,14 @@
 #include "TestComponent.h"
 #include "imgui.h"
 
-TestComponent::TestComponent() {}
-
-TestComponent::TestComponent(GameObject* ownerGameObject) {
-	gameObject = ownerGameObject;
+TestComponent::TestComponent(GameObject* ownerGameObject) 
+	:Component(ownerGameObject, ComponentType::TEST)
+{
+	
 }
 
 TestComponent::TestComponent(const TestComponent& original)
+	:Component(original.GetOwner(), ComponentType::TEST)
 {
 	
 }

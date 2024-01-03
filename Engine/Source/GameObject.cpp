@@ -424,7 +424,7 @@ void GameObject::AddComponentButton() {
 		if (component->GetType() == ComponentType::MESHRENDERER) {
 			hasMeshRendererComponent = true;
 		}
-		else if (component->GetType() == ComponentType::MATERIAL) {
+		else if (component->GetType() == ComponentType::TEST) {
 			hasMaterialComponent = true;
 		}
 
@@ -449,10 +449,10 @@ void GameObject::AddComponentButton() {
 			//Component* newComponent = CreateComponent(ComponentType::MESHRENDERER);
 			CreateComponent(ComponentType::MESHRENDERER);
 		}
-		if (!hasMaterialComponent && ImGui::MenuItem("Material")) {
+		if (!hasMaterialComponent && ImGui::MenuItem("Test")) {
 			//**********************************************************
 			//Component* newComponent = CreateComponent(ComponentType::MATERIAL);
-			CreateComponent(ComponentType::MATERIAL);
+			CreateComponent(ComponentType::TEST);
 		}
 
 		ImGui::EndPopup();
@@ -469,12 +469,10 @@ void GameObject::CreateComponent(ComponentType type) {
 		case ComponentType::MESHRENDERER:
 			//ONLY FOR TEST PURPOSE
 			newComponent = new MeshRendererComponent(this);
-			newComponent->SetType(type); // Assigns the type to the Component
 			break;
-		case ComponentType::MATERIAL:
+		case ComponentType::TEST:
 			//ONLY FOR TEST PURPOSE        
 			newComponent = new TestComponent(this);
-			newComponent->SetType(type);
 			break;
 		default:
 			break;

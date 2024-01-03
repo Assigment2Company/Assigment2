@@ -9,7 +9,6 @@ struct Mesh;
 class TestComponent : public Component
 {
 public:
-	TestComponent();
 	TestComponent(GameObject* ownerGameObject);
 	TestComponent(const TestComponent& original);
 	//~TestComponent();

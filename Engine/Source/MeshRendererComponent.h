@@ -9,7 +9,6 @@ struct Mesh;
 class MeshRendererComponent : public Component
 {
 public:
-	MeshRendererComponent();
 	MeshRendererComponent(GameObject* ownerGameObject);
 	MeshRendererComponent(const MeshRendererComponent& original);
 	//~MeshRendererComponent();
