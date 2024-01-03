@@ -16,7 +16,7 @@
 static ModuleEditor* s_ModuleEditorInstance = nullptr;
 
 ModuleEditor::ModuleEditor()
-{	
+{
 	s_ModuleEditorInstance = this;
 
 	mPanels[ABOUTPANEL] = new AboutPanel();
@@ -150,7 +150,7 @@ void ModuleEditor::ShowMainMenuBar() {
 					}
 				}
 				//if (ImGui::MenuItem("2 Game")) {}
-				
+
 				if (ImGui::MenuItem("2 Hierarchy")) {
 					Panel* hierarchy = s_ModuleEditorInstance->mPanels[HIERARCHYPANEL];
 					if (hierarchy)

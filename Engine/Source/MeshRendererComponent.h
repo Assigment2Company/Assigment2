@@ -1,16 +1,19 @@
 #pragma once
 #include "Component.h"
 #include "Geometry/AABB.h"
+#include "GameObject.h"
 
 class Material;
 struct Mesh;
+
 class MeshRendererComponent : public Component
 {
 public:
 	MeshRendererComponent();
+	MeshRendererComponent(GameObject* ownerGameObject);
 	MeshRendererComponent(const MeshRendererComponent& original);
 	//~MeshRendererComponent();
-	
+
 	void Draw();
 	void Load();
 
@@ -19,18 +22,13 @@ public:
 	Component* Clone() override;
 
 private:
-	
 	void LoadVBO();
 	void LoadEBO();
 	void LoadVAO();
 
-
 	Mesh* mMesh;
 	Material* material;
-
 	AABB mAABB;
-
-	
-
+	GameObject* gameObject;
 };
 

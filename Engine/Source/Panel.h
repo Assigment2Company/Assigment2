@@ -20,4 +20,3 @@ protected:
 private:
 	const char* mName = nullptr;
 };
-
