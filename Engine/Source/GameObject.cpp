@@ -142,7 +142,10 @@ void GameObject::SetScale(const float3& scale)
 }
 
 void GameObject::DrawInspector() {
-	ImGui::Text(mName.c_str());
+	char nameArray[100];
+	strcpy_s(nameArray, mName.c_str());
+	ImGui::InputText("##rename", nameArray, IM_ARRAYSIZE(nameArray));
+	mName = nameArray;
 	DrawTransform();
 
 	componentIndex = 0;
@@ -236,7 +239,7 @@ void GameObject::OnRightClick() {
 			}
 		}
 
-		if (!(App->GetScene()->GetSelectedGameObject()->IsRoot())) {
+		if (!mIsRoot) {
 			if (ImGui::Selectable("Delete")) {
 				App->GetScene()->AddGameObjectToDelete(this);
 				App->GetScene()->SetSelectedObject(App->GetScene()->GetRoot());
