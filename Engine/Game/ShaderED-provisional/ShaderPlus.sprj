@@ -28,19 +28,19 @@
 				<variable type="float3" name="cameraPos" system="CameraPosition3" />
 				<variable type="float" name="shininess">
 					<row>
-						<value>10</value>
+						<value>300</value>
 					</row>
 				</variable>
 				<variable type="float" name="indexRefraction">
 					<row>
-						<value>0.850000024</value>
+						<value>0.27700001</value>
 					</row>
 				</variable>
 				<variable type="float3" name="ambientColor">
 					<row>
-						<value>0.308880329</value>
-						<value>0.30887723</value>
-						<value>0.30887723</value>
+						<value>0.146718144</value>
+						<value>0.146716669</value>
+						<value>0.146716669</value>
 					</row>
 				</variable>
 				<variable type="float3" name="lightDir">
@@ -52,7 +52,7 @@
 				</variable>
 				<variable type="float" name="lightIntensity">
 					<row>
-						<value>3</value>
+						<value>4</value>
 					</row>
 				</variable>
 				<variable type="float3" name="lightColor">
@@ -78,7 +78,7 @@
 				</variable>
 				<variable type="float" name="lightIntensity2">
 					<row>
-						<value>3</value>
+						<value>4</value>
 					</row>
 				</variable>
 			</variables>
@@ -92,9 +92,8 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="Simple2" item="pipe" />
-		<entry type="file" name="Plus" shader="ps" />
 		<entry type="file" name="Plus" shader="vs" />
+		<entry type="file" name="Plus" shader="ps" />
 		<entry type="pinned" name="shininess" owner="Plus" />
 		<entry type="pinned" name="ambientColor" owner="Plus" />
 		<entry type="pinned" name="indexRefraction" owner="Plus" />
@@ -105,9 +104,9 @@
 		<entry type="pinned" name="lightColor2" owner="Plus" />
 		<entry type="pinned" name="lightIntensity2" owner="Plus" />
 		<entry type="camera" fp="false">
-			<distance>48</distance>
-			<pitch>13</pitch>
-			<yaw>319</yaw>
+			<distance>41</distance>
+			<pitch>20</pitch>
+			<yaw>245</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<project version="2">
+	<pipeline>
+		<pass name="Shader_BoxRobot" type="shader" active="true" patchverts="1">
+			<shader type="vs" path="shaders\ShaderBoxRobot_Shader_BoxRobotVS.glsl" entry="main" />
+			<shader type="ps" path="shaders\ShaderBoxRobot_Shader_BoxRobotPS.glsl" entry="main" />
+			<inputlayout>
+				<item value="Position" semantic="POSITION" />
+				<item value="Normal" semantic="NORMAL" />
+				<item value="Texcoord" semantic="TEXCOORD0" />
+			</inputlayout>
+			<rendertexture />
+			<items>
+				<item name="Box" type="geometry">
+					<type>Cube</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<topology>TriangleList</topology>
+				</item>
+			</items>
+			<itemvalues />
+			<variables>
+				<variable type="float3" name="lightDir">
+					<row>
+						<value>-1</value>
+						<value>-1</value>
+						<value>-0.400000006</value>
+					</row>
+				</variable>
+				<variable type="float3" name="cameraPos" system="CameraPosition3" />
+				<variable type="float" name="shininess">
+					<row>
+						<value>300</value>
+					</row>
+				</variable>
+				<variable type="float" name="indexRefraction">
+					<row>
+						<value>0.899999976</value>
+					</row>
+				</variable>
+				<variable type="float" name="lightIntensity">
+					<row>
+						<value>2</value>
+					</row>
+				</variable>
+				<variable type="float3" name="lightColor">
+					<row>
+						<value>1</value>
+						<value>0.999989986</value>
+						<value>0.999989986</value>
+					</row>
+				</variable>
+				<variable type="float3" name="ambientColor">
+					<row>
+						<value>1</value>
+						<value>0.999989986</value>
+						<value>0.999989986</value>
+					</row>
+				</variable>
+				<variable type="float4x4" name="proj" system="Projection" />
+				<variable type="float4x4" name="view" system="View" />
+				<variable type="float4x4" name="model" system="GeometryTransform" />
+			</variables>
+			<macros />
+		</pass>
+	</pipeline>
+	<objects>
+		<object type="texture" path="SecondAssignmentModels\box.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="0" name="Shader_BoxRobot" />
+		</object>
+		<object type="texture" path="SecondAssignmentModels\specular_box.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="1" name="Shader_BoxRobot" />
+		</object>
+	</objects>
+	<cameras />
+	<settings>
+		<entry type="property" name="C:\Users\marcg\Desktop\Master\Assignatures\3D Game Engine\Engine A2\Assigment2\Engine\Game\ShaderED-provisional\SecondAssignmentModels\box.png" item="image3D" />
+		<entry type="file" name="Shader_BoxRobot" shader="ps" />
+		<entry type="file" name="Shader_BoxRobot" shader="vs" />
+		<entry type="pinned" name="lightDir" owner="Shader_BoxRobot" />
+		<entry type="pinned" name="shininess" owner="Shader_BoxRobot" />
+		<entry type="pinned" name="lightIntensity" owner="Shader_BoxRobot" />
+		<entry type="pinned" name="lightColor" owner="Shader_BoxRobot" />
+		<entry type="pinned" name="ambientColor" owner="Shader_BoxRobot" />
+		<entry type="pinned" name="indexRefraction" owner="Shader_BoxRobot" />
+		<entry type="camera" fp="false">
+			<distance>3</distance>
+			<pitch>30</pitch>
+			<yaw>320</yaw>
+			<roll>360</roll>
+		</entry>
+		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
+		<entry type="usealpha" val="false" />
+		<entry type="bkpt" file="C:/Users/marcg/Desktop/Master/Assignatures/3D Game Engine/Engine A2/Assigment2/Engine/Game/ShaderED-provisional/shaders/ShaderBoxRobot_Shader_BoxRobotPS.glsl" line="30" use_cond="false" cond="" enabled="true" />
+	</settings>
+	<plugindata />
+</project>
