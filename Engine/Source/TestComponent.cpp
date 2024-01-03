@@ -37,7 +37,6 @@ void TestComponent::DrawEditor()
 	}
 
 	if (gameObject) {
-		// Activate Delete Popup for every Component
 		gameObject->DeletePopup(this, 38);
 	}
 }

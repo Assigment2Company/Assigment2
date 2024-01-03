@@ -45,9 +45,6 @@ public:
 	void SetPosition(const float3& position);
 	void SetScale(const float3& scale);
 
-	//**************************************************
-	// Create a new component linked to this GameObject
-	//Component* CreateComponent(ComponentType type);
 	void CreateComponent(ComponentType type);
 	void DeletePopup(Component* component, int headerPosition);
 

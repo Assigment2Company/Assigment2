@@ -65,7 +65,6 @@ update_status ModuleEditor::PreUpdate()
 	//static bool show = true;
 	//ImGui::ShowDemoWindow(&show);
 
-	//Create Menu bar for the editor
 	ShowMainMenuBar();
 
 	return UPDATE_CONTINUE;
