@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project version="2">
 	<pipeline>
-		<pass name="Shader_BoxRobot" type="shader" active="false" patchverts="1">
+		<pass name="Shader_Box" type="shader" active="false" patchverts="1">
 			<shader type="vs" path="shaders\ShaderBoxRobot_Shader_BoxRobotVS.glsl" entry="main" />
 			<shader type="ps" path="shaders\ShaderBoxRobot_Shader_BoxRobotPS.glsl" entry="main" />
 			<inputlayout>
@@ -44,21 +44,21 @@
 				</variable>
 				<variable type="float" name="lightIntensity">
 					<row>
-						<value>3</value>
+						<value>0.0299999993</value>
 					</row>
 				</variable>
 				<variable type="float3" name="lightColor">
 					<row>
-						<value>1</value>
-						<value>0.999989986</value>
-						<value>0.999989986</value>
+						<value>0.861003876</value>
+						<value>0.860995233</value>
+						<value>0.860995233</value>
 					</row>
 				</variable>
 				<variable type="float3" name="ambientColor">
 					<row>
-						<value>0.424710453</value>
-						<value>0.424706191</value>
-						<value>0.424706191</value>
+						<value>0.918918908</value>
+						<value>0.915370941</value>
+						<value>0.915370941</value>
 					</row>
 				</variable>
 				<variable type="float4x4" name="proj" system="Projection" />
@@ -109,9 +109,9 @@
 				</variable>
 				<variable type="float3" name="ambientColor">
 					<row>
-						<value>0.552123547</value>
-						<value>0.552118003</value>
-						<value>0.552118003</value>
+						<value>0.575289607</value>
+						<value>0.575283825</value>
+						<value>0.575283825</value>
 					</row>
 				</variable>
 			</variables>
@@ -120,10 +120,10 @@
 	</pipeline>
 	<objects>
 		<object type="texture" path="SecondAssignmentModels\box.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
-			<bind slot="0" name="Shader_BoxRobot" />
+			<bind slot="0" name="Shader_Box" />
 		</object>
 		<object type="texture" path="SecondAssignmentModels\specular_box.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
-			<bind slot="1" name="Shader_BoxRobot" />
+			<bind slot="1" name="Shader_Box" />
 		</object>
 		<object type="texture" path="SecondAssignmentModels\Robot\RobotDiffuse.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
 			<bind slot="0" name="Shader_Robot" />
@@ -134,18 +134,16 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="file" name="Shader_BoxRobot" shader="ps" />
-		<entry type="file" name="Shader_BoxRobot" shader="vs" />
 		<entry type="file" name="Shader_Robot" shader="vs" />
 		<entry type="file" name="Shader_Robot" shader="ps" />
-		<entry type="pinned" name="lightDir" owner="Shader_BoxRobot" />
-		<entry type="pinned" name="lightIntensity" owner="Shader_BoxRobot" />
-		<entry type="pinned" name="lightColor" owner="Shader_BoxRobot" />
-		<entry type="pinned" name="ambientColor" owner="Shader_BoxRobot" />
+		<entry type="pinned" name="lightDir" owner="Shader_Box" />
+		<entry type="pinned" name="lightIntensity" owner="Shader_Box" />
+		<entry type="pinned" name="lightColor" owner="Shader_Box" />
+		<entry type="pinned" name="ambientColor" owner="Shader_Box" />
 		<entry type="camera" fp="false">
-			<distance>12</distance>
-			<pitch>63</pitch>
-			<yaw>207</yaw>
+			<distance>11</distance>
+			<pitch>22</pitch>
+			<yaw>149</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

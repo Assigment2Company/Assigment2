@@ -47,7 +47,7 @@ void main() {
 	//New color with specular map
 	vec3 colorSpecular = ((diffuseColor*(1-specularColor))/ pi + ((shininess +2) / (2*pi))* RFOi_specular * VdotRpown) * Li * NdotL;
 	//New color with specular and no pi corretion
-	vec3 colorWithSpecularNoPi = ((diffuseColor*(1-specularColor)) + ((shininess +2))* RFOi_specular * VdotRpown) * Li * NdotL;
+	vec3 colorSpecularNoPi = ((diffuseColor*(1-specularColor)) + ((shininess +2))* RFOi_specular * VdotRpown) * Li * NdotL;
 	//Deliting the pi corrections is in the power point although
 	//I don't understand it's mathematical meaning. If variables
 	//are tweaked, the result is similar and can look good.
@@ -61,12 +61,12 @@ void main() {
 		if(colorSpecular[i] < 0){
 			colorSpecular[i] = 0;
 		}
-		if(colorWithSpecularNoPi[i] < 0){
-			colorWithSpecularNoPi[i] = 0;
+		if(colorSpecularNoPi[i] < 0){
+			colorSpecularNoPi[i] = 0;
 		}
 	}
 					  				  				  
-	vec3 finalColor = ambientColor * diffuseColor + colorWithSpecularNoPi;
+	vec3 finalColor = ambientColor * diffuseColor + colorSpecularNoPi;
 	
 	//Output
 	outColor = vec4(finalColor, 1.0f);

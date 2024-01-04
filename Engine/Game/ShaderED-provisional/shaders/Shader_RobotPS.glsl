@@ -12,6 +12,7 @@ uniform vec3 lightColor;
 uniform float lightIntensity;
 
 uniform vec3 cameraPos;
+
 uniform vec3 ambientColor;
 
 //Material properties
@@ -23,6 +24,7 @@ out vec4 outColor;
 void main() {
 	vec3 diffuseColor = vec3(texture(diffuseTexture, uv0)); //Diffuse color
 	float specularColor = (texture(specularTexture, uv0)).r; //Specular map
+	
 	float shininess = exp2(15*texture(specularTexture, uv0).a+1);
 	
 	vec3 N = -normalize(normal);  //Normal
@@ -40,19 +42,22 @@ void main() {
 	//Color with specular map
 	vec3 colorSpecular = ((diffuseColor*(1-specularColor))/ pi + ((shininess +2) / (2*pi))* RFOi_specular * VdotRpown) * Li * NdotL;
 	//Color with specular and no pi corretion
-	vec3 colorWithSpecularNoPi = ((diffuseColor*(1-specularColor)) + ((shininess +2))* RFOi_specular * VdotRpown) * Li * NdotL;
+	vec3 colorSpecularNoPi = ((diffuseColor*(1-specularColor)) + ((shininess +2))* RFOi_specular * VdotRpown) * Li * NdotL;
 	
-	//It doesn't make sense for color to be negative
+	
+	//I DON'T KNOW IF THIS IS RIGHT
+	
+	/*It doesn't make sense for color to be negative
 	for(int i=0; i<3; i++){
 		if(colorSpecular[i] < 0){
 			colorSpecular[i] = 0;
 		}
-		if(colorWithSpecularNoPi[i] < 0){
-			colorWithSpecularNoPi[i] = 0;
+		if(colorSpecularNoPi[i] < 0){
+			colorSpecularNoPi[i] = 0;
 		}
-	}
+	}*/
 					  				  				  
-	vec3 finalColor = ambientColor * diffuseColor + colorWithSpecularNoPi;
+	vec3 finalColor = ambientColor * diffuseColor + colorSpecularNoPi;
 	
 	//Output
 	outColor = vec4(finalColor, 1.0f);
