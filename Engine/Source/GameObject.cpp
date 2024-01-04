@@ -115,6 +115,13 @@ void GameObject::Update()
 	}
 }
 
+void GameObject::ResetTransform()
+{
+	mPosition = { 0,0,0 };
+	mScale = { 0,0,0 };
+	mRotation = { 0,0,0,0};
+}
+
 void GameObject::DeleteChild(GameObject* child)
 {
 	auto childIterator = std::find(mChildren.begin(), mChildren.end(), child);
@@ -361,7 +368,24 @@ void GameObject::DragAndDrop()
 }
 
 void GameObject::DrawTransform() {
-	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+	bool headerOpen = ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth |
+		ImGuiTreeNodeFlags_AllowItemOverlap);
+	ImGui::SameLine(ImGui::GetItemRectSize().x - 50.0f);
+	ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(4 / 7.0f, 0.6f, 0.6f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(4 / 7.0f, 0.7f, 0.7f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(4/ 7.0f, 0.8f, 0.8f));
+	if (ImGui::SmallButton("Config")) {
+		ImGui::OpenPopup("TransformOptions");
+	}
+	if (ImGui::BeginPopup("TransformOptions")) {
+		if (ImGui::Selectable("Reset")) {
+			ResetTransform();
+		}
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopStyleColor(3);
+	if (headerOpen) {
 		bool modifiedTransform = false;
 		if (ImGui::BeginTable("transformTable", 2)) {
 			ImGui::TableNextRow();
