@@ -1,7 +1,6 @@
 #pragma once
 #include "Component.h"
 #include "Geometry/AABB.h"
-#include "GameObject.h"
 
 class Material;
 struct Mesh;
@@ -28,6 +27,5 @@ private:
 	Mesh* mMesh;
 	Material* material;
 	AABB mAABB;
-	GameObject* gameObject;
 };
 

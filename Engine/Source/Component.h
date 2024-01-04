@@ -22,9 +22,21 @@ public:
 	const ComponentType GetType() const { return mType; }
 	GameObject* GetOwner() const { return mOwner; }
 
+//****************************
+protected:
+	bool IsComponentOpen();
+	const char* componentName;
+	//***********************************
+	int componentIndex;
+//****************************
+
 private:
 	ComponentType mType;
 	GameObject* mOwner;
 	bool mIsEnabled;
+
+	//***********************************
+	//int componentIndex;
+	//***********************************
 };
 

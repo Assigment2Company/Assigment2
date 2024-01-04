@@ -8,7 +8,6 @@
 #include "imgui.h"
 #include <algorithm>
 
-//CLASSES FOR TESTING PURPOSE:
 #include "MeshRendererComponent.h"
 #include "TestComponent.h"
 
@@ -27,7 +26,7 @@ GameObject::GameObject(GameObject* parent)
 
 GameObject::GameObject(const GameObject& original)
 	:mID((new LCG())->Int()), mName(original.mName), mParent(original.mParent),
-	mIsRoot(original.mIsRoot), mIsEnabled(original.mIsEnabled), mWorldTransformMatrix(original.mWorldTransformMatrix),
+	mIsRoot(false), mIsEnabled(original.mIsEnabled), mWorldTransformMatrix(original.mWorldTransformMatrix),
 	mLocalTransformMatrix(original.mLocalTransformMatrix), mPosition(original.mPosition), mScale(original.mScale),
 	mRotation(original.mRotation)
 {
@@ -183,24 +182,8 @@ void GameObject::DrawHierarchy(const int selected)
 			App->GetScene()->SetSelectedObject(this);
 		}
 		OnRightClick();
-		/*****Begin Drag & Drop Code*******/
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
-		{
-			ImGui::SetDragDropPayload("_TREENODE", this, sizeof(*this));
+		DragAndDrop();
 
-			ImGui::Text(mName.c_str());
-			ImGui::EndDragDropSource();
-		}
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TREENODE"))
-			{
-				const GameObject* movedObject = (const GameObject*)payload->Data;
-				movedObject->mParent->MoveChild(movedObject->GetID(), this);
-			}
-			ImGui::EndDragDropTarget();
-		}
-		/*****End Drag & Drop Code*******/
 	}
 	if (nodeOpen) {
 		for (auto child : mChildren) {
@@ -211,7 +194,7 @@ void GameObject::DrawHierarchy(const int selected)
 			ImGui::TreePop(); 
 		}
 	}
-	if (mIsRoot) { // Dragging something to this Separator will move it to the end of root
+	if (mIsRoot) {
 		ImGui::Separator();
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -223,12 +206,12 @@ void GameObject::DrawHierarchy(const int selected)
 			ImGui::EndDragDropTarget();
 		}
 	}
-	//OnLeftClick();
+
+	
 
 }
 
-void GameObject::OnLeftClick() {
-}
+
 
 void GameObject::OnRightClick() {
 	ImGui::PushID(mID);
@@ -243,17 +226,18 @@ void GameObject::OnRightClick() {
 				App->GetScene()->SetSelectedObject(gameObject);
 		}
 
-		if (!(App->GetScene()->GetSelectedGameObject()->IsRoot())) {
+		if (!mIsRoot) {
 			if (ImGui::Selectable("Duplicate")) {
 				GameObject* gameObject = new GameObject(*this);
-				mParent->AddChild(gameObject);
+				//mParent->AddChild(gameObject);
+				App->GetScene()->AddGameObjectToDuplicate(gameObject);
 				App->GetScene()->SetSelectedObject(gameObject);
 			}
 		}
 
 		if (!(App->GetScene()->GetSelectedGameObject()->IsRoot())) {
 			if (ImGui::Selectable("Delete")) {
-				App->GetScene()->AddGameObjectToDelete(GetID());
+				App->GetScene()->AddGameObjectToDelete(this);
 				App->GetScene()->SetSelectedObject(App->GetScene()->GetRoot());
 			}
 		}
@@ -261,6 +245,7 @@ void GameObject::OnRightClick() {
 	}
 	ImGui::PopID();
 }
+
 
 void GameObject::AddChild(GameObject* child, const int aboveThisId)
 {
@@ -351,6 +336,26 @@ void GameObject::AddSufix()
 
 }
 
+void GameObject::DragAndDrop()
+{
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+	{
+		ImGui::SetDragDropPayload("_TREENODE", this, sizeof(*this));
+
+		ImGui::Text(mName.c_str());
+		ImGui::EndDragDropSource();
+	}
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TREENODE"))
+		{
+			const GameObject* movedObject = (const GameObject*)payload->Data;
+			movedObject->mParent->MoveChild(movedObject->GetID(), this);
+		}
+		ImGui::EndDragDropTarget();
+	}
+}
+
 void GameObject::DrawTransform() {
 	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
 		bool modifiedTransform = false;
@@ -415,6 +420,7 @@ void GameObject::AddComponentButton() {
 	bool hasMeshRendererComponent = false;
 	bool hasMaterialComponent = false;
 
+	/*
 	for (Component* component : mComponents) {
 		if (component->GetType() == ComponentType::MESHRENDERER) {
 			hasMeshRendererComponent = true;
@@ -427,7 +433,7 @@ void GameObject::AddComponentButton() {
 			break;
 		}
 	}
-
+	*/
 	if (!hasMeshRendererComponent || !hasMaterialComponent) {
 		if (ImGui::Button("Add Component", ImVec2(buttonWidth, 0))) {
 			ImGui::OpenPopup("AddComponentPopup");
@@ -451,12 +457,11 @@ void GameObject::CreateComponent(ComponentType type) {
 
 	switch (type) {
 		case ComponentType::MESHRENDERER:
-			//ONLY FOR TEST PURPOSE
 			newComponent = new MeshRendererComponent(this);
 			break;
-		case ComponentType::TEST:
-			//ONLY FOR TEST PURPOSE        
-			newComponent = new TestComponent(this);
+		case ComponentType::TEST:    
+			testID++;
+			newComponent = new TestComponent(this, testID);
 			break;
 		default:
 			break;
@@ -467,18 +472,11 @@ void GameObject::CreateComponent(ComponentType type) {
 	}
 }
 
-void GameObject::DeletePopup(Component* component, int headerPosition) {
+void GameObject::DeletePopup(Component* component) {
 	ImGui::PushID(componentIndex); // Work correctly without this function, its necessary?
-
 	std::string popupID = "ComponentOptions_" + std::to_string(componentIndex);
 
-	ImVec2 min = ImGui::GetItemRectMin();
-	ImVec2 max = ImGui::GetItemRectMax();
-
-	min.y -= ImGui::GetStyle().FramePadding.y + headerPosition;
-	max.y += ImGui::GetStyle().FramePadding.y - headerPosition;
-
-	if (ImGui::IsMouseHoveringRect(min, max) && ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
+	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
 		ImGui::OpenPopup(popupID.c_str());
 	}
 

@@ -1,11 +1,12 @@
 #include "MeshRendererComponent.h"
 #include "imgui.h"
 
-
-MeshRendererComponent::MeshRendererComponent(GameObject* ownerGameObject) 
+MeshRendererComponent::MeshRendererComponent(GameObject* ownerGameObject)
 	:Component(ownerGameObject, ComponentType::MESHRENDERER)
 {
-	
+	componentName = "Mesh Renderer";
+
+	componentIndex++;
 }
 
 MeshRendererComponent::MeshRendererComponent(const MeshRendererComponent& original)
@@ -30,15 +31,11 @@ void MeshRendererComponent::Update()
 
 void MeshRendererComponent::DrawEditor()
 {
-	if (ImGui::CollapsingHeader("MeshRenderer", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (IsComponentOpen()) {
 		// SIMULATED CONTENT FOR TEST PURPOSES:
 		ImGui::Text("Model: Cube.obj (TEST)");
 		ImGui::Text("Material: DefaultMaterial (TEST)");
 		ImGui::Text("Shader: StandardShader (TEST)");
-	}
-
-	if (gameObject) {
-		gameObject->DeletePopup(this, 55);
 	}
 }
 

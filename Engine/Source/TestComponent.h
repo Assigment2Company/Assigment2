@@ -1,7 +1,6 @@
 #pragma once
 #include "Component.h"
 #include "Geometry/AABB.h"
-#include "GameObject.h"
 
 class Material;
 struct Mesh;
@@ -9,7 +8,7 @@ struct Mesh;
 class TestComponent : public Component
 {
 public:
-	TestComponent(GameObject* ownerGameObject);
+	TestComponent(GameObject* ownerGameObject, int id);
 	TestComponent(const TestComponent& original);
 	//~TestComponent();
 
@@ -28,6 +27,5 @@ private:
 	Mesh* mMesh;
 	Material* material;
 	AABB mAABB;
-	GameObject* gameObject;
 };
 
