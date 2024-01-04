@@ -12,6 +12,7 @@
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui.h"
+#include <ImGuizmo.h>
 
 static ModuleEditor* s_ModuleEditorInstance = nullptr;
 
@@ -49,7 +50,9 @@ update_status ModuleEditor::PreUpdate()
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
+	
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 
 	if (ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode))
 	{

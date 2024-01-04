@@ -85,6 +85,16 @@ void ModuleCamera::rotate(float angle, const float3& axis)
 }
 
 
+const float4x4& ModuleCamera::GetProjectionMatrix()
+{
+    return frustum.ProjectionMatrix();
+}
+
+const float4x4& ModuleCamera::GetViewMatrix()
+{
+    return frustum.ViewMatrix();
+}
+
 void ModuleCamera::ProcessInput()
 {
 

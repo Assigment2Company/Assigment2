@@ -151,6 +151,22 @@
     <ClCompile Include="ModuleRenderTest.cpp" />
     <ClCompile Include="ModuleDebugDraw.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib-v1.5\include\Geometry\AABB.cpp" />
+    <ClCompile Include="Dependencies\MathGeoLib-v1.5\include\Geometry\AABB.cpp" />
+    <ClCompile Include="Dependencies\ImGuizmo-1.83\GraphEditor.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImCurveEdit.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImGradient.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImGuizmo.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImSequencer.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -397,6 +413,24 @@
     <ClInclude Include="debug_draw.hpp">
       <Filter>Dependencies\DebugDraw</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\GraphEditor.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImCurveEdit.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImGradient.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImGuizmo.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImSequencer.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImZoomSlider.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dependencies">
@@ -431,6 +465,9 @@
     </Filter>
     <Filter Include="Dependencies\DebugDraw">
       <UniqueIdentifier>{3e12352f-bdca-40ad-8564-2646a77ac41c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\ImGuizmo">
+      <UniqueIdentifier>{b16fd91f-0d78-43f7-8f8e-aedfe673a35e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

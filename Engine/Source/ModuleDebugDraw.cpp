@@ -611,6 +611,7 @@ update_status  ModuleDebugDraw::Update()
     if (false)
     {
         DrawGrid();
+        DrawAxis(float4x4::identity, 0.0f, 25.0f);
     }
 	return UPDATE_CONTINUE;
 }
@@ -621,7 +622,7 @@ void ModuleDebugDraw::Draw(const float4x4& viewproj,  unsigned width, unsigned h
     implementation->height = height;
     implementation->mvpMatrix = viewproj;
 
-    dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
+    //dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
     dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
 
 
@@ -642,10 +643,16 @@ void ModuleDebugDraw::DrawBoundingBox(const OBB& obb)
 void ModuleDebugDraw::DrawGrid()
 {
     dd::xzSquareGrid(-500, 500, -0.1f, 1.0f, dd::colors::White);
-    dd::axisTriad(float4x4::identity, 0.0f, 25.0f);
+    
 }
 
 void ModuleDebugDraw::DrawFrustum(const Frustum& frustum)
 {
     dd::frustum(frustum.ViewProjMatrix().Inverted(), dd::colors::White);
+}
+
+void ModuleDebugDraw::DrawAxis(const math::float4x4& trasnform, float size, float length)
+{
+    dd::axisTriad(trasnform, size, length);
+    //dd::flush();
 }

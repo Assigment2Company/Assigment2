@@ -4,18 +4,22 @@
 #include "Application.h"
 #include "ModuleScene.h"
 #include "ModuleEditor.h"
+#include "ModuleCamera.h"
 #include "InspectorPanel.h"
 #include "imgui.h"
+#include "ImGuizmo.h"
 #include <algorithm>
 
 #include "MeshRendererComponent.h"
 #include "TestComponent.h"
+#include "ModuleDebugDraw.h"
+#include <MathFunc.h>
 
 GameObject::GameObject(GameObject* parent)
 	:mID((new LCG())->Int()), mName("GameObject"), mParent(parent),
-	mIsRoot(parent == nullptr), mIsEnabled(true), mWorldTransformMatrix(float4x4::zero),
-	mLocalTransformMatrix(float4x4::zero), mPosition(float3::zero), mScale(float3::zero),
-	mRotation(Quat::identity)
+	mIsRoot(parent == nullptr), mIsEnabled(true), mWorldTransformMatrix(float4x4::identity),
+	mLocalTransformMatrix(float4x4::identity), mPosition(float3::zero), mScale(float3::one),
+	mRotation(float3::zero)
 {
 	if (!mIsRoot) {
 		mWorldTransformMatrix = mParent->GetWorldTransform();
@@ -64,9 +68,9 @@ GameObject::GameObject(const GameObject& original, GameObject* newParent)
 
 GameObject::GameObject(const char* name, GameObject* parent)
 	:mID((new LCG())->Int()), mName(name), mParent(parent),
-	mIsRoot(parent == nullptr), mIsEnabled(true), mWorldTransformMatrix(float4x4::zero),
-	mLocalTransformMatrix(float4x4::zero), mPosition(float3::zero), mScale(float3::zero),
-	mRotation(Quat::identity)
+	mIsRoot(parent == nullptr), mIsEnabled(true), mWorldTransformMatrix(float4x4::identity),
+	mLocalTransformMatrix(float4x4::identity), mPosition(float3::zero), mScale(float3::one),
+	mRotation(float3::zero)
 {
 
 	if (!mIsRoot) {
@@ -92,10 +96,10 @@ GameObject::~GameObject()
 
 void GameObject::RecalculateMatrices()
 {
-	mLocalTransformMatrix = float4x4::FromTRS(mPosition, mRotation, mScale);
+	//mLocalTransformMatrix = float4x4::FromTRS(mPosition, mRotation, mScale);
 
+	mLocalTransformMatrix = float4x4::FromTRS(mPosition, Quat::FromEulerXYZ(DegToRad(mRotation.x), DegToRad(mRotation.y), DegToRad(mRotation.z)), mScale);
 	mWorldTransformMatrix = mParent->GetWorldTransform() * mLocalTransformMatrix;
-
 	for (size_t i = 0; i < mChildren.size(); i++) {
 		mChildren[i]->RecalculateMatrices();
 	}
@@ -112,6 +116,19 @@ void GameObject::Update()
 	for (size_t i = 0; i < mChildren.size(); i++) {
 		mChildren[i]->Update();
 	}
+	if (App->GetScene()->GetSelectedGameObject() == this) {
+		//App->GetDebugDraw()->DrawAxis(mWorldTransformMatrix, 0.1f, 1.0f);
+
+	}
+	ImGuizmo::SetDrawlist();
+	ImGuizmo::Enable(true);
+	
+	ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
+
+
+	ImGuizmo::DrawGrid(App->GetCamera()->GetViewMatrix().Transposed().ptr(), App->GetCamera()->GetProjectionMatrix().Transposed().ptr(), float4x4::identity.Transposed().ptr(), 100);
+	ImGuizmo::Manipulate(App->GetCamera()->GetViewMatrix().Transposed().ptr(), App->GetCamera()->GetProjectionMatrix().Transposed().ptr(), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, mWorldTransformMatrix.Transposed().ptr());
+
 }
 
 void GameObject::DeleteChild(GameObject* child)
@@ -122,7 +139,7 @@ void GameObject::DeleteChild(GameObject* child)
 	child = nullptr;
 }
 
-void GameObject::SetRotation(const Quat& rotation)
+void GameObject::SetRotation(const float3& rotation)
 {
 	mRotation = rotation;
 	RecalculateMatrices();
