@@ -48,9 +48,7 @@ void main() {
 	vec3 colorSpecular = ((diffuseColor*(1-specularColor))/ pi + ((shininess +2) / (2*pi))* RFOi_specular * VdotRpown) * Li * NdotL;
 	//New color with specular and no pi corretion
 	vec3 colorSpecularNoPi = ((diffuseColor*(1-specularColor)) + ((shininess +2))* RFOi_specular * VdotRpown) * Li * NdotL;
-	//Deliting the pi corrections is in the power point although
-	//I don't understand it's mathematical meaning. If variables
-	//are tweaked, the result is similar and can look good.
+	
 	
 	
 	//It doesn't make sense for color to be negative
@@ -66,7 +64,7 @@ void main() {
 		}
 	}
 					  				  				  
-	vec3 finalColor = ambientColor * diffuseColor + colorSpecularNoPi;
+	vec3 finalColor = ambientColor * diffuseColor + colorSpecular;
 	
 	//Output
 	outColor = vec4(finalColor, 1.0f);

@@ -38,9 +38,9 @@
 				</variable>
 				<variable type="float3" name="ambientColor">
 					<row>
-						<value>0.146718144</value>
-						<value>0.146716669</value>
-						<value>0.146716669</value>
+						<value>9.99999997e-07</value>
+						<value>9.99989993e-07</value>
+						<value>9.99989993e-07</value>
 					</row>
 				</variable>
 				<variable type="float3" name="lightDir">
@@ -92,8 +92,8 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="file" name="Plus" shader="vs" />
 		<entry type="file" name="Plus" shader="ps" />
+		<entry type="file" name="Plus" shader="vs" />
 		<entry type="pinned" name="shininess" owner="Plus" />
 		<entry type="pinned" name="ambientColor" owner="Plus" />
 		<entry type="pinned" name="indexRefraction" owner="Plus" />
@@ -105,8 +105,8 @@
 		<entry type="pinned" name="lightIntensity2" owner="Plus" />
 		<entry type="camera" fp="false">
 			<distance>41</distance>
-			<pitch>20</pitch>
-			<yaw>245</yaw>
+			<pitch>5</pitch>
+			<yaw>0</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

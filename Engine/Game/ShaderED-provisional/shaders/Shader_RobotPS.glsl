@@ -16,18 +16,23 @@ uniform vec3 cameraPos;
 uniform vec3 ambientColor;
 
 //Material properties
-uniform sampler2D diffuseTexture;
-uniform sampler2D specularTexture;
+uniform sampler2D diffuseTexture; 	//Bind (0)
+uniform sampler2D specularTexture; 	//Bind (1)
+uniform sampler2D normalTexture; 	//Bind (2)	Not implemented yet
 
 out vec4 outColor;
 
 void main() {
-	vec3 diffuseColor = vec3(texture(diffuseTexture, uv0)); //Diffuse color
+	//No gamma correction
+	//vec3 diffuseColor = vec3(texture(diffuseTexture, uv0)); //Diffuse color
+	//With gamma correction
+	vec3 diffuseColor = pow(vec3(texture(diffuseTexture, uv0)), vec3(2.2)); //Diffuse color
 	float specularColor = (texture(specularTexture, uv0)).r; //Specular map
 	
 	float shininess = exp2(15*texture(specularTexture, uv0).a+1);
 	
 	vec3 N = -normalize(normal);  //Normal
+	
 	vec3 L =  normalize(lightDir); //Light direction
 	float NdotL = dot(N,L);
 	
@@ -39,25 +44,24 @@ void main() {
 	
 	vec3 Li = lightIntensity * lightColor;  //Incoming radiance
 	
-	//Color with specular map
-	vec3 colorSpecular = ((diffuseColor*(1-specularColor))/ pi + ((shininess +2) / (2*pi))* RFOi_specular * VdotRpown) * Li * NdotL;
 	//Color with specular and no pi corretion
-	vec3 colorSpecularNoPi = ((diffuseColor*(1-specularColor)) + ((shininess +2))* RFOi_specular * VdotRpown) * Li * NdotL;
-	
+	vec3 color = ((diffuseColor*(1-specularColor)) + ((shininess +2)/2)* RFOi_specular * VdotRpown) * Li * NdotL;
 	
 	//I DON'T KNOW IF THIS IS RIGHT
-	
-	/*It doesn't make sense for color to be negative
+	//It doesn't make sense for color to be negative
 	for(int i=0; i<3; i++){
-		if(colorSpecular[i] < 0){
-			colorSpecular[i] = 0;
+		if(color[i] < 0){
+			color[i] = 0;
 		}
-		if(colorSpecularNoPi[i] < 0){
-			colorSpecularNoPi[i] = 0;
-		}
-	}*/
+	}
+	
+	//Gamma correction
+	color.rgb = pow(color.rgb, vec3(1/2.2));
 					  				  				  
-	vec3 finalColor = ambientColor * diffuseColor + colorSpecularNoPi;
+	vec3 finalColor = ambientColor * diffuseColor + color;
+	
+	//Gamma correction
+	//finalColor.rgb = pow(finalColor.rgb, vec3(1/2.2));
 	
 	//Output
 	outColor = vec4(finalColor, 1.0f);

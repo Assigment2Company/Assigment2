@@ -44,21 +44,21 @@
 				</variable>
 				<variable type="float" name="lightIntensity">
 					<row>
-						<value>0.0299999993</value>
+						<value>1.10000002</value>
 					</row>
 				</variable>
 				<variable type="float3" name="lightColor">
 					<row>
-						<value>0.861003876</value>
-						<value>0.860995233</value>
-						<value>0.860995233</value>
+						<value>1</value>
+						<value>0.999989986</value>
+						<value>0.999989986</value>
 					</row>
 				</variable>
 				<variable type="float3" name="ambientColor">
 					<row>
-						<value>0.918918908</value>
-						<value>0.915370941</value>
-						<value>0.915370941</value>
+						<value>0.66023165</value>
+						<value>0.660225034</value>
+						<value>0.660225034</value>
 					</row>
 				</variable>
 				<variable type="float4x4" name="proj" system="Projection" />
@@ -80,6 +80,7 @@
 				<item name="Robot" type="model">
 					<filepath>SecondAssignmentModels\Robot\Robot.gltf</filepath>
 					<grouponly>false</grouponly>
+					<x>0.985314846</x>
 				</item>
 			</items>
 			<itemvalues />
@@ -89,7 +90,7 @@
 				<variable type="float4x4" name="model" system="GeometryTransform" />
 				<variable type="float3" name="lightDir">
 					<row>
-						<value>-1</value>
+						<value>0</value>
 						<value>-0.5</value>
 						<value>0.5</value>
 					</row>
@@ -103,15 +104,15 @@
 				<variable type="float3" name="lightColor">
 					<row>
 						<value>1</value>
-						<value>0.999989986</value>
-						<value>0.999989986</value>
+						<value>0.99613899</value>
+						<value>0.99613899</value>
 					</row>
 				</variable>
 				<variable type="float3" name="ambientColor">
 					<row>
-						<value>0.575289607</value>
-						<value>0.575283825</value>
-						<value>0.575283825</value>
+						<value>0.389957458</value>
+						<value>0.389961362</value>
+						<value>0.389957458</value>
 					</row>
 				</variable>
 			</variables>
@@ -119,31 +120,39 @@
 		</pass>
 	</pipeline>
 	<objects>
-		<object type="texture" path="SecondAssignmentModels\box.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
-			<bind slot="0" name="Shader_Box" />
-		</object>
-		<object type="texture" path="SecondAssignmentModels\specular_box.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
-			<bind slot="1" name="Shader_Box" />
-		</object>
 		<object type="texture" path="SecondAssignmentModels\Robot\RobotDiffuse.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
 			<bind slot="0" name="Shader_Robot" />
 		</object>
 		<object type="texture" path="SecondAssignmentModels\Robot\RobotSpecular.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
 			<bind slot="1" name="Shader_Robot" />
 		</object>
+		<object type="texture" path="SecondAssignmentModels\Box\box.png" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="0" name="Shader_Box" />
+		</object>
+		<object type="texture" path="SecondAssignmentModels\Box\specular_box.png" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="1" name="Shader_Box" />
+		</object>
+		<object type="texture" path="SecondAssignmentModels\Robot\RobotNormals.png" vflip="true" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="2" name="Shader_Robot" />
+		</object>
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="file" name="Shader_Robot" shader="vs" />
+		<entry type="property" name="C:\Users\marcg\Desktop\Master\Assignatures\3D Game Engine\Engine A2\Assigment2\Engine\Game\ShaderED-provisional\SecondAssignmentModels\Robot\RobotNormals.png" item="image3D" />
 		<entry type="file" name="Shader_Robot" shader="ps" />
-		<entry type="pinned" name="lightDir" owner="Shader_Box" />
-		<entry type="pinned" name="lightIntensity" owner="Shader_Box" />
-		<entry type="pinned" name="lightColor" owner="Shader_Box" />
-		<entry type="pinned" name="ambientColor" owner="Shader_Box" />
+		<entry type="file" name="Shader_Robot" shader="vs" />
+		<entry type="file" name="Shader_Box" shader="ps" />
+		<entry type="file" name="Shader_Box" shader="vs" />
+		<entry type="pinned" name="shininess" owner="Shader_Box" />
+		<entry type="pinned" name="indexRefraction" owner="Shader_Box" />
+		<entry type="pinned" name="lightDir" owner="Shader_Robot" />
+		<entry type="pinned" name="lightIntensity" owner="Shader_Robot" />
+		<entry type="pinned" name="lightColor" owner="Shader_Robot" />
+		<entry type="pinned" name="ambientColor" owner="Shader_Robot" />
 		<entry type="camera" fp="false">
-			<distance>11</distance>
-			<pitch>22</pitch>
-			<yaw>149</yaw>
+			<distance>10</distance>
+			<pitch>53</pitch>
+			<yaw>188</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

@@ -55,7 +55,7 @@ void main() {
 	vec3 color2 = ((diffuseColor*(1-RF0))/ pi + ((shininess +2) / (2*pi))* RFOi2 * VdotRpown2) 
 					  * Li2 * NdotL2;
 	
-	//It doesn't make sense for color to be negative
+	/*It doesn't make sense for color to be negative
 	for(int i=0; i<3; i++){
 		if(color1[i] < 0){
 			color1[i] = 0;
@@ -63,7 +63,7 @@ void main() {
 		if(color2[i] < 0){
 			color2[i] = 0;
 		}
-	}
+	}*/
 					  				  				  
 	vec3 finalColor = ambientColor * diffuseColor + color1 + color2;
 	
