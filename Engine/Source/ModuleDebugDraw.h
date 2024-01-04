@@ -25,7 +25,7 @@ public:
     void SetDrawGrid(bool drawGrid);
     bool GetDrawGrid() const;
     void Draw(const float4x4& viewproj, unsigned width, unsigned height);
-    void DrawAxis(const math::float4x4& trasnform, float size, float length);
+
 
 private:
 
@@ -36,7 +36,7 @@ private:
     void DrawBoundingBox(const OBB& obb);
     void DrawGrid();
     void DrawFrustum(const Frustum& frustum); 
-    
+
 };
 
 inline void ModuleDebugDraw::SetDrawGrid(bool drawGrid)

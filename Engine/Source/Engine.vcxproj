@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -100,7 +100,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\carlo\Documents\GitHub\Assigment2\Engine\Source\Dependencies\ImGuizmo-1.83;$(ProjectDir)Dependencies\SDL-2.0.16\include;$(ProjectDir)Dependencies\GLEW-2.1.0\include\GL;$(ProjectDir)Dependencies\ImGui-1.90-docking\include;$(ProjectDir)Dependencies\ImGui-1.90-docking\include\backends;$(ProjectDir)Dependencies\MathGeoLib-v1.5\include;$(ProjectDir)Dependencies\MathGeoLib-v1.5\include\Math</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\SDL-2.0.16\include;$(ProjectDir)Dependencies\GLEW-2.1.0\include\GL;$(ProjectDir)Dependencies\ImGui-1.90-docking\include;$(ProjectDir)Dependencies\ImGui-1.90-docking\include\backends;$(ProjectDir)Dependencies\MathGeoLib-v1.5\include;$(ProjectDir)Dependencies\MathGeoLib-v1.5\include\Math</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,13 +157,6 @@
     <ClCompile Include="Dependencies\ImGui-1.90-docking\include\imgui_draw.cpp" />
     <ClCompile Include="Dependencies\ImGui-1.90-docking\include\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui-1.90-docking\include\imgui_widgets.cpp" />
-    <ClCompile Include="Dependencies\ImGuizmo-1.83\GraphEditor.cpp" />
-    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImCurveEdit.cpp" />
-    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImGradient.cpp" />
-    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImGuizmo.cpp" />
-    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImSequencer.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib-v1.5\include\Geometry\AABB.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib-v1.5\include\Algorithm\Random\LCG.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib-v1.5\include\Geometry\AABB.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib-v1.5\include\Geometry\Capsule.cpp" />
@@ -196,6 +189,7 @@
     <ClCompile Include="Dependencies\MathGeoLib-v1.5\include\Math\SSEMath.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib-v1.5\include\Math\TransformOps.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib-v1.5\include\Time\Clock.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="HierarchyPanel.cpp" />
     <ClCompile Include="InspectorPanel.cpp" />
     <ClCompile Include="log.cpp" />
@@ -228,12 +222,6 @@
     <ClInclude Include="Dependencies\ImGui-1.90-docking\include\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\ImGui-1.90-docking\include\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui-1.90-docking\include\imstb_truetype.h" />
-    <ClInclude Include="Dependencies\ImGuizmo-1.83\GraphEditor.h" />
-    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImCurveEdit.h" />
-    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImGradient.h" />
-    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImGuizmo.h" />
-    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImSequencer.h" />
-    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImZoomSlider.h" />
     <ClInclude Include="Dependencies\MathGeoLib-v1.5\include\Algorithm\Random\LCG.h" />
     <ClInclude Include="Dependencies\MathGeoLib-v1.5\include\Geometry\AABB.h" />
     <ClInclude Include="Dependencies\MathGeoLib-v1.5\include\Geometry\AABB2D.h" />
@@ -311,14 +299,6 @@
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="TestComponent.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Dependencies\MathGeoLib-v1.5\include\Geometry\KDTree.inl" />
-    <None Include="Dependencies\MathGeoLib-v1.5\include\Geometry\QuadTree.inl" />
-    <None Include="Dependencies\MathGeoLib-v1.5\include\Geometry\TriangleMesh_IntersectRay_AVX.inl" />
-    <None Include="Dependencies\MathGeoLib-v1.5\include\Geometry\TriangleMesh_IntersectRay_CPP.inl" />
-    <None Include="Dependencies\MathGeoLib-v1.5\include\Geometry\TriangleMesh_IntersectRay_SSE.inl" />
-    <None Include="Dependencies\MathGeoLib-v1.5\include\Math\Matrix.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
