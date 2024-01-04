@@ -166,6 +166,21 @@
     <ClCompile Include="Dependencies\MathGeoLib-v1.5\include\Math\TransformOps.cpp">
       <Filter>Dependencies\MathGeoLib\Math</Filter>
     </ClCompile>
+    <ClCompile Include="Dependencies\ImGuizmo-1.83\GraphEditor.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImCurveEdit.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImGradient.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImGuizmo.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGuizmo-1.83\ImSequencer.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -428,6 +443,24 @@
     <ClInclude Include="Dependencies\MathGeoLib-v1.5\include\Math\TransformOps.h">
       <Filter>Dependencies\MathGeoLib\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\GraphEditor.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImCurveEdit.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImGradient.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImGuizmo.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImSequencer.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo-1.83\ImZoomSlider.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dependencies">
@@ -462,6 +495,9 @@
     </Filter>
     <Filter Include="Dependencies\MathGeoLib\Time">
       <UniqueIdentifier>{6cbf4185-af1b-4c6a-88b9-2d7a2a367dc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\ImGuizmo">
+      <UniqueIdentifier>{51fabacf-413b-41be-b248-d4f45464ee5b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

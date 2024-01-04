@@ -134,8 +134,8 @@ void GameObject::Update()
 void GameObject::ResetTransform()
 {
 	mPosition = { 0,0,0 };
-	mScale = { 0,0,0 };
-	mRotation = { 0,0,0,0};
+	mScale = { 1,1,1 };
+	mRotation = {0,0,0};
 }
 
 void GameObject::DeleteChild(GameObject* child)

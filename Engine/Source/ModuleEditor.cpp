@@ -16,8 +16,6 @@
 
 static ModuleEditor* s_ModuleEditorInstance = nullptr;
 
-static ModuleEditor* s_ModuleEditorInstance = nullptr;
-
 ModuleEditor::ModuleEditor()
 {
 	s_ModuleEditorInstance = this;
