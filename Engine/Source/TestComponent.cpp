@@ -1,18 +1,19 @@
 #include "TestComponent.h"
 #include "imgui.h"
 
-TestComponent::TestComponent(GameObject* ownerGameObject, int id)
+TestComponent::TestComponent(GameObject* ownerGameObject) 
 	:Component(ownerGameObject, ComponentType::TEST)
 {
 	componentName = "Test Component";
-
-	componentIndex=id;
 }
 
 TestComponent::TestComponent(const TestComponent& original)
 	:Component(original.GetOwner(), ComponentType::TEST)
 {
 	
+}
+void TestComponent::Reset() {
+
 }
 
 void TestComponent::Draw()
@@ -33,7 +34,6 @@ void TestComponent::Update()
 void TestComponent::DrawEditor()
 {
 	if (IsComponentOpen()) {
-		// SIMULATED CONTENT FOR TEST PURPOSES:
 		ImGui::Text("Color: (R: 255, G: 0, B: 0) (TEST)");
 		ImGui::Text("Texture: DefaultTexture (TEST)");
 	}

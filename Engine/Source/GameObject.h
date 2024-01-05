@@ -34,6 +34,7 @@ public:
 	const float3& GetScale() const { return mScale; }
 	GameObject* GetParent() const { return mParent; }
 	const std::string* GetName() const { return &mName; }
+	void ResetTransform();
 
 	const std::vector<GameObject*>& GetChildren() const { return mChildren; }
 	const unsigned int GetID() const { return mID; }
@@ -69,7 +70,5 @@ private:
 	void DrawTransform();
 	void AddComponentButton();
 	void RemoveComponent(Component* component);
-
-	int testID = 0;
 };
 

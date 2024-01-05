@@ -13,6 +13,7 @@ public:
 	virtual	void Enable() { mIsEnabled = true; };
 	virtual	void Disable() { mIsEnabled = false; }
 	virtual	void Update() = 0;
+	virtual	void Reset() = 0;
 	virtual	void DrawEditor() = 0;
 	virtual Component* Clone() = 0;
 
@@ -22,21 +23,15 @@ public:
 	const ComponentType GetType() const { return mType; }
 	GameObject* GetOwner() const { return mOwner; }
 
-//****************************
 protected:
 	bool IsComponentOpen();
-	const char* componentName;
-	//***********************************
-	int componentIndex;
-//****************************
+	const char* componentName = "TEST";
+	int componentIndex = 0;
+	static int lastcomponentIndex;
 
 private:
 	ComponentType mType;
 	GameObject* mOwner;
 	bool mIsEnabled;
-
-	//***********************************
-	//int componentIndex;
-	//***********************************
 };
 
