@@ -90,9 +90,9 @@
 				<variable type="float4x4" name="model" system="GeometryTransform" />
 				<variable type="float3" name="lightDir">
 					<row>
-						<value>0</value>
 						<value>-0.5</value>
-						<value>0.5</value>
+						<value>-0.300000012</value>
+						<value>-0.5</value>
 					</row>
 				</variable>
 				<variable type="float3" name="cameraPos" system="CameraPosition3" />
@@ -104,8 +104,8 @@
 				<variable type="float3" name="lightColor">
 					<row>
 						<value>1</value>
-						<value>0.99613899</value>
-						<value>0.99613899</value>
+						<value>0.999989986</value>
+						<value>0.999989986</value>
 					</row>
 				</variable>
 				<variable type="float3" name="ambientColor">
@@ -138,11 +138,8 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="C:\Users\marcg\Desktop\Master\Assignatures\3D Game Engine\Engine A2\Assigment2\Engine\Game\ShaderED-provisional\SecondAssignmentModels\Robot\RobotNormals.png" item="image3D" />
 		<entry type="file" name="Shader_Robot" shader="ps" />
 		<entry type="file" name="Shader_Robot" shader="vs" />
-		<entry type="file" name="Shader_Box" shader="ps" />
-		<entry type="file" name="Shader_Box" shader="vs" />
 		<entry type="pinned" name="shininess" owner="Shader_Box" />
 		<entry type="pinned" name="indexRefraction" owner="Shader_Box" />
 		<entry type="pinned" name="lightDir" owner="Shader_Robot" />
@@ -150,9 +147,9 @@
 		<entry type="pinned" name="lightColor" owner="Shader_Robot" />
 		<entry type="pinned" name="ambientColor" owner="Shader_Robot" />
 		<entry type="camera" fp="false">
-			<distance>10</distance>
-			<pitch>53</pitch>
-			<yaw>188</yaw>
+			<distance>13</distance>
+			<pitch>42</pitch>
+			<yaw>193</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

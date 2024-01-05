@@ -24,17 +24,18 @@ out vec4 outColor;
 
 void main() {
 	//No gamma correction
-	//vec3 diffuseColor = vec3(texture(diffuseTexture, uv0)); //Diffuse color
-	//With gamma correction
+	//vec3 diffuseColor = vec3(texture(diffuseTexture, uv0));
+	//float specularColor = (texture(specularTexture, uv0)).r;
+	
+	//Using  gamma correction forces to transform sRGB textures to linear space
 	vec3 diffuseColor = pow(vec3(texture(diffuseTexture, uv0)), vec3(2.2)); //Diffuse color
-	float specularColor = (texture(specularTexture, uv0)).r; //Specular map
+	float specularColor = pow((texture(specularTexture, uv0)).r,2.2); //Specular map
 	
 	float shininess = exp2(15*texture(specularTexture, uv0).a+1);
 	
-	vec3 N = -normalize(normal);  //Normal
-	
-	vec3 L =  normalize(lightDir); //Light direction
-	float NdotL = dot(N,L);
+	vec3 N = -normalize(normal);  	//Normal
+	vec3 L =  normalize(lightDir); 	//Light direction
+	float NdotL = max(dot(N,L),0);	//It doesn't make sense for color to be negative
 	
 	vec3 R = reflect(L,N);
 	vec3 V = normalize(cameraPos - position); //View direction
@@ -45,24 +46,13 @@ void main() {
 	vec3 Li = lightIntensity * lightColor;  //Incoming radiance
 	
 	//Color with specular and no pi corretion
-	vec3 color = ((diffuseColor*(1-specularColor)) + ((shininess +2)/2)* RFOi_specular * VdotRpown) * Li * NdotL;
+	vec3 lightColor = ((diffuseColor*(1-specularColor)) + ((shininess +2)/2)* RFOi_specular * VdotRpown) * Li * NdotL;
 	
-	//I DON'T KNOW IF THIS IS RIGHT
-	//It doesn't make sense for color to be negative
-	for(int i=0; i<3; i++){
-		if(color[i] < 0){
-			color[i] = 0;
-		}
-	}
-	
-	//Gamma correction
-	color.rgb = pow(color.rgb, vec3(1/2.2));
+	//Light gamma correction
+	lightColor.rgb = pow(lightColor.rgb, vec3(1/2.2));
 					  				  				  
-	vec3 finalColor = ambientColor * diffuseColor + color;
-	
-	//Gamma correction
-	//finalColor.rgb = pow(finalColor.rgb, vec3(1/2.2));
+	vec3 color = ambientColor * diffuseColor + lightColor;
 	
 	//Output
-	outColor = vec4(finalColor, 1.0f);
+	outColor = vec4(color, 1.0f);
 }
