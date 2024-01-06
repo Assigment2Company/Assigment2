@@ -23,6 +23,7 @@ ModuleFileSystem::ModuleFileSystem()
     CreateDirectory(LIBRARY_MESH_PATH);
     CreateDirectory(LIBRARY_TEXTURE_PATH);
     CreateDirectory(LIBRARY_MATERIAL_PATH);
+    CreateDirectory(LIBRARY_SHADER_PATH);
 }
 
 // Destructor
@@ -36,7 +37,8 @@ bool ModuleFileSystem::Init()
 {
     //Importer::CreateBinaryFile();
 
-    Importer::Import("Assets/Models/Triangle/Triangle.gltf");
+    //Importer::Import("Assets/Models/Triangle/Triangle.gltf");
+    Importer::Import("Shaders/basic.vs");
 
     //TODO CREATE LIBRARY FILE SYSTEM FOLDERS
 
@@ -69,13 +71,17 @@ unsigned int ModuleFileSystem::Load(const char* filePath, char** buffer) const
             int fileSize = PHYSFS_fileLength(newFile);
             if (fileSize > 0)
             {
-                *buffer = new char[fileSize];
+                *buffer = new char[(fileSize+1)];
                 readBytesSize = PHYSFS_readBytes(newFile, *buffer, fileSize);
                 if (readBytesSize != fileSize)
                 {
                     LOG("Error reading from file %s: %s\n", filePath, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
                     delete[](*buffer);
                     *buffer = nullptr;
+                }
+                else
+                {
+                    (*buffer)[fileSize] = '\0';
                 }
             }
             if (PHYSFS_close(newFile) == 0)

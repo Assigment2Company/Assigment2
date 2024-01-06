@@ -181,7 +181,7 @@ void Importer::Mesh::Import(const tinygltf::Model& model, const tinygltf::Primit
 
     char* fileBuffer = nullptr;
     ResourceMesh loadedMesh;
-    Mesh::Load(fileBuffer, &loadedMesh, mesh->mFileName);
+    Mesh::Load(fileBuffer, &loadedMesh, mesh->mMeshName);
 }
 
 void Importer::Mesh::Save(const ResourceMesh* mesh)
@@ -207,7 +207,7 @@ void Importer::Mesh::Save(const ResourceMesh* mesh)
     cursor += bytes;
  
     std::string path = LIBRARY_MESH_PATH;
-    path += mesh->mFileName;
+    path += mesh->mMeshName;
     path += ".messhi";
 
     App->GetFileSystem()->Save(path.c_str(), fileBuffer, size);
