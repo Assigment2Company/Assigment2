@@ -18,6 +18,9 @@ public:
 
 	~GameObject();
 
+	//template<class T>
+	//T* GetComponent();
+	Component* GetComponent(ComponentType type);
 	void RecalculateMatrices();
 	void Update();
 	void DrawInspector();
@@ -40,21 +43,25 @@ public:
 	const unsigned int GetID() const { return mID; }
 	const bool IsRoot() const { return mIsRoot; }
 	void DeleteChild(GameObject* child);
+	void AddComponentToDelete(Component* component);
 
 	void SetRotation(const float3& rotation);
 	void SetPosition(const float3& position);
 	void SetScale(const float3& scale);
 
 	void CreateComponent(ComponentType type);
-	void DeletePopup(Component* component, int headerPosition);
 
 private:
 	void MoveChild(const int id, GameObject* newParent, const int aboveThisId = 0);
 	void AddSufix();
 	void DragAndDrop();
+	void DrawTransform();
+	void AddComponentButton();
+	void DeleteComponents();
 	std::vector<GameObject*> mChildren;
 	GameObject* mParent = nullptr;
 	std::vector<Component*> mComponents;
+	std::vector<Component*> mComponentsToDelete;
 	const unsigned int mID;
 	std::string mName;
 	float4x4 mWorldTransformMatrix;
@@ -67,11 +74,6 @@ private:
 
 	int componentIndex;
 
-	void DrawTransform();
-	void AddComponentButton();
-	void ShowComponents(Component* component);
-	void DrawMeshRenderer(Component* component);
-	void DrawMaterial(Component* component);
-	void RemoveComponent(Component* component);
+	
 };
 

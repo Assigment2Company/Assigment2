@@ -94,6 +94,29 @@ GameObject::~GameObject()
 
 }
 
+
+/*template<class T>
+T* GameObject::GetComponent() {
+	T& GameObject::GetComponent() {
+		for (auto&& component : components) {
+			if (component->IsClassType(T::Type))
+				return *static_cast<T*>(component.get());
+		}
+
+		return *std::unique_ptr<T>(nullptr);
+	}
+}
+*/
+Component* GameObject::GetComponent(ComponentType type)
+{
+	for (auto component : mComponents) {
+		if (component->GetType() == type) {
+			return component;
+		}
+	}
+	return nullptr;
+}
+
 void GameObject::RecalculateMatrices()
 {
 	//mLocalTransformMatrix = float4x4::FromTRS(mPosition, mRotation, mScale);
@@ -129,6 +152,8 @@ void GameObject::Update()
 	ImGuizmo::DrawGrid(App->GetCamera()->GetViewMatrix().Transposed().ptr(), App->GetCamera()->GetProjectionMatrix().Transposed().ptr(), float4x4::identity.Transposed().ptr(), 100);
 	ImGuizmo::Manipulate(App->GetCamera()->GetViewMatrix().Transposed().ptr(), App->GetCamera()->GetProjectionMatrix().Transposed().ptr(), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, mWorldTransformMatrix.Transposed().ptr());
 
+
+	DeleteComponents();
 }
 
 void GameObject::ResetTransform()
@@ -147,10 +172,11 @@ void GameObject::DeleteChild(GameObject* child)
 }
 
 void GameObject::SetRotation(const float3& rotation)
+void GameObject::AddComponentToDelete(Component* component)
 {
-	mRotation = rotation;
-	RecalculateMatrices();
+	mComponentsToDelete.push_back(component);
 }
+
 
 void GameObject::SetPosition(const float3& position)
 {
@@ -451,6 +477,7 @@ void GameObject::DrawTransform() {
 		}
 		ImGui::EndTable();
 	}
+
 }
 
 void GameObject::AddComponentButton() {
@@ -513,46 +540,17 @@ void GameObject::CreateComponent(ComponentType type) {
 	}
 }
 
-void GameObject::DeletePopup(Component* component, int headerPosition) {
-	ImGui::PushID(componentIndex); // Work correctly without this function, its necessary?
-
-	std::string popupID = "ComponentOptions_" + std::to_string(componentIndex);
-
-	ImVec2 min = ImGui::GetItemRectMin();
-	ImVec2 max = ImGui::GetItemRectMax();
-
-	min.y -= ImGui::GetStyle().FramePadding.y + headerPosition;
-	max.y += ImGui::GetStyle().FramePadding.y - headerPosition;
-
-	if (ImGui::IsMouseHoveringRect(min, max) && ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
-		ImGui::OpenPopup(popupID.c_str());
-	}
-
-	if (ImGui::BeginPopupContextItem(popupID.c_str())) {
-		ImGui::OpenPopup(popupID.c_str());
-		ImGui::EndPopup();
-	}
-
-	if (ImGui::BeginPopup(popupID.c_str())) {
-		if (ImGui::MenuItem("Delete Component")) {
-			RemoveComponent(component);
-			ImGui::CloseCurrentPopup();
+void GameObject::DeleteComponents() {
+	for (auto component : mComponentsToDelete)
+	{
+		auto it = std::find(mComponents.begin(), mComponents.end(), component);
+		if (it != mComponents.end()) {
+			mComponents.erase(it);
+			delete component;
+			component = nullptr;
 		}
-		if (ImGui::MenuItem("Reset Component")) {
-			component->Reset();
-			ImGui::CloseCurrentPopup();
-		}
-		ImGui::EndPopup();
 	}
 
-	ImGui::PopID();
-	componentIndex++;
 }
 
-void GameObject::RemoveComponent(Component* component) {
-	auto it = std::find(mComponents.begin(), mComponents.end(), component);
-	if (it != mComponents.end()) {
-		mComponents.erase(it);
-		delete component;
-	}
-}
+
