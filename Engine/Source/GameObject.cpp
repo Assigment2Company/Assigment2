@@ -172,6 +172,9 @@ void GameObject::DeleteChild(GameObject* child)
 }
 
 void GameObject::SetRotation(const float3& rotation)
+{
+	mRotation = rotation;
+}
 void GameObject::AddComponentToDelete(Component* component)
 {
 	mComponentsToDelete.push_back(component);
