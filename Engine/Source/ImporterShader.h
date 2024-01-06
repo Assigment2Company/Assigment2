@@ -24,7 +24,6 @@ struct ResourceProgram
 
 	std::vector<VertexShaderAttribute> mAttributes;
 
-	void CreateProgram(ResourceShader* vertex, ResourceShader* fragment);
 };
 
 namespace Importer
@@ -35,9 +34,11 @@ namespace Importer
 
 		void Save(const ResourceShader* ourShader, char** fileBuffer);
 
-		void Load(const char* fileName);
+		void Load(const char* fileName, ResourceShader* shader);
 
-		ResourceShader* CreateShader(unsigned int type, const char* shaderSource);
+		void CreateShader(unsigned int type, const char* shaderSource, ResourceShader* shader);
+
+		void CreateProgram(const ResourceShader* vertex, const ResourceShader* fragment, ResourceProgram& program);
 	}
 };
 

@@ -24,7 +24,10 @@ void Importer::Shader::Import(const char* filePath)
 
 	Shader::Save(shader, &fileBuffer);
 
-	Shader::Load(shader->mShaderName);
+	ResourceShader* loadedShader = new ResourceShader; //Move to render
+	Shader::Load(shader->mShaderName, loadedShader);
+	delete shader;
+	shader = nullptr;
 }
 
 void Importer::Shader::Save(const ResourceShader* ourShader, char** buffer)
@@ -35,7 +38,7 @@ void Importer::Shader::Save(const ResourceShader* ourShader, char** buffer)
 	App->GetFileSystem()->Save(path.c_str(),(*buffer), strlen((*buffer)));
 }
 
-void Importer::Shader::Load(const char* fileName)
+void Importer::Shader::Load(const char* fileName, ResourceShader* shader)
 {
 	std::string path = LIBRARY_SHADER_PATH;
 	path += fileName;
@@ -45,16 +48,14 @@ void Importer::Shader::Load(const char* fileName)
 	name = name.substr(0, extensionPos);
 
 	if (name.compare("vs") == 0)
-		CreateShader(GL_VERTEX_SHADER, path.c_str());
+		CreateShader(GL_VERTEX_SHADER, path.c_str(), shader);
 	else if (name.compare("fs") == 0)
-		CreateShader(GL_FRAGMENT_SHADER, path.c_str());
+		CreateShader(GL_FRAGMENT_SHADER, path.c_str(), shader);
 }
 
-ResourceShader* Importer::Shader::CreateShader(unsigned int type, const char* shaderSource)
+void Importer::Shader::CreateShader(unsigned int type, const char* shaderSource, ResourceShader* shader)
 {
-	ResourceShader* shader = new ResourceShader;
-
-	strcpy(const_cast<char*>(shader->mShaderName), shaderSource);
+	strcpy_s(const_cast<char*>(shader->mShaderName), sizeof(strlen(shader->mShaderName)), shaderSource);
 	shader->mType = type;
 	shader->mId = glCreateShader(type);
 	glShaderSource(shader->mId, 1, &shaderSource, 0);
@@ -76,11 +77,71 @@ ResourceShader* Importer::Shader::CreateShader(unsigned int type, const char* sh
 			info = nullptr;
 		}
 	}
-
-	return shader;
 }
 
-void ResourceProgram::CreateProgram(ResourceShader* vertex, ResourceShader* fragment)
+void Importer::Shader::CreateProgram(const ResourceShader* vertex, const ResourceShader* fragment, ResourceProgram& program)
 {
+	program.mProgramId = glCreateProgram();
+
+	glAttachShader(program.mProgramId, vertex->mId);
+	glAttachShader(program.mProgramId, fragment->mId);
+	glLinkProgram(program.mProgramId);
+	int res;
+	glGetProgramiv(program.mProgramId, GL_LINK_STATUS, &res);
+	if (res == GL_FALSE)
+	{
+		int len = 0;
+		glGetProgramiv(program.mProgramId, GL_INFO_LOG_LENGTH, &len);
+		if (len > 0)
+		{
+			int written = 0;
+			char* info = new char[len];
+			glGetProgramInfoLog(program.mProgramId, len, &written, info);
+			LOG("Program Log Info: %s", info);
+			delete[] info;
+			info = nullptr;
+		}
+	}
+	glDetachShader(program.mProgramId, vertex->mId);
+	glDetachShader(program.mProgramId, fragment->mId);
+	glDeleteShader(vertex->mId);
+	glDeleteShader(fragment->mId);
+
+	int attributeCount;
+	char attributeName[128];
+	int attributeNameLenght;
+	int attributeSize;
+	GLenum attributeType;
+
+	unsigned int attributeLocation;
+
+	glGetProgramiv(program.mProgramId, GL_ACTIVE_ATTRIBUTES, &attributeCount);
+
+	for (int i = 0; i <= attributeCount; ++i)
+	{
+		glGetActiveAttrib(program.mProgramId, i, ((sizeof(attributeName))/(sizeof(attributeName[0]))), &attributeNameLenght, &attributeSize, &attributeType, attributeName);
+
+		attributeLocation = glGetAttribLocation(program.mProgramId, attributeName);
+
+		unsigned int realCount = 0;
+
+		switch (attributeType)
+		{
+		case GL_FLOAT:
+			realCount = 1;
+			break;
+		case GL_FLOAT_VEC2:
+			realCount = 2;
+			break;
+		case GL_FLOAT_VEC3:
+			realCount = 3;
+			break;
+		default:
+			realCount = 1;
+			break;
+		}
+		
+		program.mAttributes.push_back({attributeLocation, realCount});
+	}
 
 }
