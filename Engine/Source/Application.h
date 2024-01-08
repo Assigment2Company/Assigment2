@@ -1,5 +1,5 @@
 #pragma once
-#include <list>
+#include <vector>
 #include "Globals.h"
 #include "Module.h"
 
@@ -48,7 +48,7 @@ private:
     ModuleDebugDraw* debugDraw = nullptr;
 
 
-    std::list<Module*> modules;
+    std::vector<Module*> modules;
 
 };
 
