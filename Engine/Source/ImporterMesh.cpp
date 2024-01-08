@@ -16,6 +16,9 @@
 
 void Importer::Mesh::Import(const tinygltf::Model& model, const tinygltf::Primitive& primitive, ResourceMesh* mesh)
 {
+
+    //Create Duplicate .bin
+
     const auto& itPos = primitive.attributes.find("POSITION");
     const auto& itTexCoord = primitive.attributes.find("TEXCOORD_0");
     const auto& itNorm = primitive.attributes.find("NORMAL");
@@ -28,6 +31,10 @@ void Importer::Mesh::Import(const tinygltf::Model& model, const tinygltf::Primit
         assert(posAcc.componentType == GL_FLOAT);
         const tinygltf::BufferView& posView = model.bufferViews[posAcc.bufferView];
         const tinygltf::Buffer& posBuffer = model.buffers[posView.buffer];
+
+        posBuffer.uri;
+
+        App->GetFileSystem()->Load();
 
         mesh->mNumVertices = posAcc.count;
 

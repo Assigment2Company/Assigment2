@@ -11,6 +11,8 @@
 
 void Importer::Model::Import(const char* filePath)
 {
+    //Create GLTF Dupliate
+
     tinygltf::TinyGLTF gltfContext;
     tinygltf::Model model;
     std::string error, warning;
