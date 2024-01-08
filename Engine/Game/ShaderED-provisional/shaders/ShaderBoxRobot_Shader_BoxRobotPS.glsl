@@ -23,6 +23,7 @@ uniform sampler2D specularTexture;
 out vec4 outColor;
 
 void main() {
+
 	vec3 diffuseColor = vec3(texture(diffuseTexture, uv0)); //Diffuse color
 	float specularColor = (texture(specularTexture, uv0)).r; //Specular map
 	

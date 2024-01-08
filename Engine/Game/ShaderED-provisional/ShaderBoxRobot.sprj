@@ -98,7 +98,7 @@
 				<variable type="float3" name="cameraPos" system="CameraPosition3" />
 				<variable type="float" name="lightIntensity">
 					<row>
-						<value>0.875</value>
+						<value>1.5</value>
 					</row>
 				</variable>
 				<variable type="float3" name="lightColor">
@@ -110,9 +110,9 @@
 				</variable>
 				<variable type="float3" name="ambientColor">
 					<row>
-						<value>0.389957458</value>
-						<value>0.389961362</value>
-						<value>0.389957458</value>
+						<value>0.705017269</value>
+						<value>0.705024302</value>
+						<value>0.705017269</value>
 					</row>
 				</variable>
 			</variables>
@@ -138,8 +138,9 @@
 	</objects>
 	<cameras />
 	<settings>
+		<entry type="file" name="Shader_Box" shader="ps" />
+		<entry type="file" name="Shader_Box" shader="vs" />
 		<entry type="file" name="Shader_Robot" shader="ps" />
-		<entry type="file" name="Shader_Robot" shader="vs" />
 		<entry type="pinned" name="shininess" owner="Shader_Box" />
 		<entry type="pinned" name="indexRefraction" owner="Shader_Box" />
 		<entry type="pinned" name="lightDir" owner="Shader_Robot" />
@@ -147,9 +148,9 @@
 		<entry type="pinned" name="lightColor" owner="Shader_Robot" />
 		<entry type="pinned" name="ambientColor" owner="Shader_Robot" />
 		<entry type="camera" fp="false">
-			<distance>13</distance>
-			<pitch>42</pitch>
-			<yaw>193</yaw>
+			<distance>8</distance>
+			<pitch>38</pitch>
+			<yaw>188</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
