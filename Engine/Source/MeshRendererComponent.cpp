@@ -13,22 +13,16 @@ MeshRendererComponent::MeshRendererComponent(const MeshRendererComponent& origin
 	mName = "MeshRenderer";
 }
 
-void MeshRendererComponent::Draw()
-{
-
-}
 void MeshRendererComponent::Reset()
 {
 
 }
 void MeshRendererComponent::Load()
 {
-	LoadVBO();
 }
 
 void MeshRendererComponent::Update()
 {
-	Draw();
 }
 
 void MeshRendererComponent::DrawEditor()
@@ -47,18 +41,6 @@ Component* MeshRendererComponent::Clone()
 	return new MeshRendererComponent(*this);
 }
 
-void MeshRendererComponent::LoadVBO()
-{
-
-}
-
-void MeshRendererComponent::LoadEBO()
-{
-}
-
-void MeshRendererComponent::LoadVAO()
-{
-}
 
 void MeshRendererComponent::RightClickPopup()
 {

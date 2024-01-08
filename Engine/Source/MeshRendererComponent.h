@@ -10,9 +10,8 @@ class MeshRendererComponent : public Component
 public:
 	MeshRendererComponent(GameObject* ownerGameObject);
 	MeshRendererComponent(const MeshRendererComponent& original);
-	//~MeshRendererComponent();
 
-	void Draw();
+
 	void Reset() override;
 	void Load();
 
@@ -21,12 +20,10 @@ public:
 	Component* Clone() override;
 
 private:
-	void LoadVBO();
-	void LoadEBO();
-	void LoadVAO();
+
 	void RightClickPopup() override;
 	Mesh* mMesh;
-	Material* material;
+	Material* mMaterial;
 	AABB mAABB;
 };
 
