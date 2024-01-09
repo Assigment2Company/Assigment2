@@ -32,9 +32,9 @@ public:
 	
 	const float4x4& GetWorldTransform() const { return mWorldTransformMatrix; }
 	const float4x4& GetLocalTransform() const { return mLocalTransformMatrix; }
-	const float3& GetRotation() const { return mRotation; }
-	const float3& GetPosition() const { return mPosition; }
-	const float3& GetScale() const { return mScale; }
+	const float3& GetRotation() const { return mLocalTransformMatrix.ToEulerXYZ(); }
+	const float3& GetPosition() const { return mLocalTransformMatrix.TranslatePart(); }
+	const float3& GetScale() const { return mLocalTransformMatrix.GetScale(); }
 	GameObject* GetParent() const { return mParent; }
 	const std::string* GetName() const { return &mName; }
 	void ResetTransform();
@@ -68,9 +68,9 @@ private:
 	float4x4 mWorldTransformMatrix = float4x4::identity;
 	float4x4 mLocalTransformMatrix = float4x4::identity;
 	const bool mIsRoot = false;
-	float3 mPosition = float3::zero;
-	float3 mRotation = float3::zero;
-	float3 mScale = float3::one;
+	//float3 mPosition = float3::zero;
+	//float3 mRotation = float3::zero;
+	//float3 mScale = float3::one;
 	bool mIsEnabled = true;
 
 	int componentIndex = 0;

@@ -7,10 +7,10 @@
 #include "InspectorPanel.h"
 #include "imgui.h"
 #include <algorithm>
-
 #include "MeshRendererComponent.h"
 #include "TestComponent.h"
 #include <MathFunc.h>
+#include "TransformOps.h"
 
 GameObject::GameObject(GameObject* parent)
 	:mID(LCG().Int()), mName("GameObject"), mParent(parent),
@@ -26,8 +26,8 @@ GameObject::GameObject(GameObject* parent)
 GameObject::GameObject(const GameObject& original)
 	:mID(LCG().Int()), mName(original.mName), mParent(original.mParent),
 	mIsRoot(original.mIsRoot), mIsEnabled(original.mIsEnabled), mWorldTransformMatrix(original.mWorldTransformMatrix),
-	mLocalTransformMatrix(original.mLocalTransformMatrix), mPosition(original.mPosition), mScale(original.mScale),
-	mRotation(original.mRotation)
+	mLocalTransformMatrix(original.mLocalTransformMatrix)
+
 {
 
 	AddSuffix();
@@ -46,8 +46,7 @@ GameObject::GameObject(const GameObject& original)
 GameObject::GameObject(const GameObject& original, GameObject* newParent)
 	:mID(LCG().Int()), mName(original.mName), mParent(newParent),
 	mIsRoot(original.mIsRoot), mIsEnabled(original.mIsEnabled), mWorldTransformMatrix(original.mWorldTransformMatrix),
-	mLocalTransformMatrix(original.mLocalTransformMatrix), mPosition(original.mPosition), mScale(original.mScale),
-	mRotation(original.mRotation)
+	mLocalTransformMatrix(original.mLocalTransformMatrix)
 {
 
 	for (auto child : original.mChildren) {
@@ -112,7 +111,7 @@ Component* GameObject::GetComponent(ComponentType type)
 
 void GameObject::RecalculateMatrices()
 {
-	mLocalTransformMatrix = float4x4::FromTRS(mPosition, Quat::FromEulerXYZ(DegToRad(mRotation.x), DegToRad(mRotation.y), DegToRad(mRotation.z)), mScale);
+	//mLocalTransformMatrix = float4x4::FromTRS(mPosition, Quat::FromEulerXYZ(DegToRad(mRotation.x), DegToRad(mRotation.y), DegToRad(mRotation.z)), mScale);
 
 	mWorldTransformMatrix = mParent->GetWorldTransform() * mLocalTransformMatrix;
 
@@ -138,9 +137,9 @@ void GameObject::Update()
 
 void GameObject::ResetTransform()
 {
-	mPosition = { 0,0,0 };
-	mScale = { 1,1,1 };
-	mRotation = { 0,0,0 };
+	SetPosition(float3::zero);
+	SetRotation(float3::zero);
+	SetScale(float3::one);
 }
 
 void GameObject::DeleteChild(GameObject* child)
@@ -159,19 +158,42 @@ void GameObject::AddComponentToDelete(Component* component)
 
 void GameObject::SetRotation(const float3& rotation)
 {
-	mRotation = rotation;
+	//mLocalTransformMatrix.SetRotatePart(Quat::FromEulerXYZ(DegToRad(rotation.x), DegToRad(rotation.y), DegToRad(rotation.z)));
+	
+	float3 translation, scale;
+	Quat auxRotation;
+	mLocalTransformMatrix.Decompose(translation, auxRotation, scale);
+	
+	
+	mLocalTransformMatrix = float4x4::FromTRS(translation, Quat::FromEulerXYZ(DegToRad(rotation.x), DegToRad(rotation.y), DegToRad(rotation.z)), scale);
+	
 	RecalculateMatrices();
+	
 }
 
 void GameObject::SetPosition(const float3& position)
 {
-	mPosition = position;
+	mLocalTransformMatrix.SetTranslatePart(position);
 	RecalculateMatrices();
 }
 
 void GameObject::SetScale(const float3& scale)
 {
-	mScale = scale;
+	
+	//mLocalTransformMatrix.RemoveScale();
+	//ScaleOp scaleOp = mLocalTransformMatrix.Scale(scale);
+	//mLocalTransformMatrix =  mLocalTransformMatrix * scaleOp;
+	float3 translation, auxScale;
+	Quat rotation;
+	mLocalTransformMatrix.Decompose(translation, rotation, auxScale);
+	if (!rotation.IsFinite()) {
+		rotation = Quat::identity;
+	}
+
+
+	mLocalTransformMatrix = float4x4::FromTRS(translation, rotation, scale);
+	 
+	//mLocalTransformMatrix = mLocalTransformMatrix * float4x4::Scale(scale);
 	RecalculateMatrices();
 }
 
@@ -323,11 +345,9 @@ void GameObject::DragAndDropTarget(bool reorder) {
 
 void GameObject::DrawTransform() {
 	bool headerOpen = ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_AllowItemOverlap);
-	ImGui::SameLine(ImGui::GetItemRectSize().x - 50.0f);
-	ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(4 / 7.0f, 0.6f, 0.6f));
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(4 / 7.0f, 0.7f, 0.7f));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(4 / 7.0f, 0.8f, 0.8f));
-	if (ImGui::SmallButton("Config##transform")) {
+	
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+
 		ImGui::OpenPopup("TransformOptions");
 	}
 	if (ImGui::BeginPopup("TransformOptions")) {
@@ -337,55 +357,140 @@ void GameObject::DrawTransform() {
 		ImGui::EndPopup();
 	}
 
-	ImGui::PopStyleColor(3);
 	if (headerOpen) {
-		bool modifiedTransform = false;
-		if (ImGui::BeginTable("transformTable", 2)) {
+		if (ImGui::BeginTable("transformTable", 4)) {
+			//ImGui::TableSetupColumn("columns", 0 , -FLT_MIN);
+			
+			float3 position = mLocalTransformMatrix.TranslatePart();
+			float3 rotation = RadToDeg(mLocalTransformMatrix.ToEulerXYZ());
+			float3 scale = mLocalTransformMatrix.GetScale();
+
 			ImGui::TableNextRow();
 			ImGui::PushID(mID);
-			ImGui::TableSetColumnIndex(0);
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
 			ImGui::Text("Position");
-			ImGui::TableSetColumnIndex(1);
-			ImGui::PushItemWidth(ImGui::GetColumnWidth(1) / 4);
-			modifiedTransform = modifiedTransform || ImGui::InputFloat("X", &mPosition.x);
-			ImGui::SameLine();
-			modifiedTransform = modifiedTransform || ImGui::InputFloat("Y", &mPosition.y);
-			ImGui::SameLine();
-			modifiedTransform = modifiedTransform || ImGui::InputFloat("Z", &mPosition.z);
 			ImGui::PopItemWidth();
+			
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("X");
+			ImGui::SameLine();
+			if (ImGui::DragFloat("##X", &position.x, 0.05f))
+			{
+				SetPosition(position);
+			}
+			ImGui::PopItemWidth();
+
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Y");
+			ImGui::SameLine();
+			if (ImGui::DragFloat("##Y", &position.y, 0.05f))
+			{
+				SetPosition(position);
+			}
+			ImGui::PopItemWidth();
+
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Z");
+			ImGui::SameLine();
+			if (ImGui::DragFloat("##Z", &position.z, 0.05f))
+			{
+				SetPosition(position);
+			}
+			ImGui::PopItemWidth();
+
 			ImGui::PopID();
+
 
 			ImGui::TableNextRow();
 			ImGui::PushID(mID + 1);
-			ImGui::TableSetColumnIndex(0);
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
 			ImGui::Text("Rotation");
-			ImGui::TableSetColumnIndex(1);
-			ImGui::PushItemWidth(ImGui::GetColumnWidth(1) / 4);
-			modifiedTransform = modifiedTransform || ImGui::InputFloat("X", &mRotation.x);
-			ImGui::SameLine();
-			modifiedTransform = modifiedTransform || ImGui::InputFloat("Y", &mRotation.y);
-			ImGui::SameLine();
-			modifiedTransform = modifiedTransform || ImGui::InputFloat("Z", &mRotation.z);
 			ImGui::PopItemWidth();
+
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("X");
+			ImGui::SameLine();
+			if (ImGui::DragFloat("##X", &rotation.x, 0.05f))
+			{
+				SetRotation(rotation);
+			}
+			ImGui::PopItemWidth();
+
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Y");
+			ImGui::SameLine();
+			if (ImGui::DragFloat("##Y", &rotation.y, 0.05f))
+			{
+				SetRotation(rotation);
+			}
+			ImGui::PopItemWidth();
+
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Z");
+			ImGui::SameLine();
+			if (ImGui::DragFloat("##Z", &rotation.z, 0.05f))
+			{
+				SetRotation(rotation);
+			}
+			ImGui::PopItemWidth();
+
 			ImGui::PopID();
+
 
 			ImGui::TableNextRow();
 			ImGui::PushID(mID + 2);
-			ImGui::TableSetColumnIndex(0);
-			ImGui::Text("Scale");
-			ImGui::TableSetColumnIndex(1);
-			ImGui::PushItemWidth(ImGui::GetColumnWidth(1) / 4);
-			modifiedTransform = modifiedTransform || ImGui::InputFloat("X", &mScale.x);
-			ImGui::SameLine();
-			modifiedTransform = modifiedTransform || ImGui::InputFloat("Y", &mScale.y);
-			ImGui::SameLine();
-			modifiedTransform = modifiedTransform || ImGui::InputFloat("Z", &mScale.z);
-			ImGui::PopItemWidth();
-			ImGui::PopID();
 
-			if (modifiedTransform) {
-				RecalculateMatrices();
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::Text("Scale");
+			
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("X");
+			ImGui::SameLine();
+			if (ImGui::DragFloat("##X", &scale.x, 0.05f, 0.0f, 100000.0f))
+			{
+				SetScale(scale);
 			}
+
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Y");
+			ImGui::SameLine();
+			if (ImGui::DragFloat("##Y", &scale.y, 0.05f, 0.0f, 100000.0f))
+			{
+				SetScale(scale);
+			}
+
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Z");
+			ImGui::SameLine();
+			if (ImGui::DragFloat("##Z", &scale.z, 0.05f, 0.0f, 100000.0f))
+			{
+				SetScale(scale);
+			}
+			ImGui::PopItemWidth();
+
+			ImGui::PopID();
+			
 		}
 		ImGui::EndTable();
 	}
