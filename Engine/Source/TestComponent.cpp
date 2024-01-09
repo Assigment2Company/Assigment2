@@ -1,60 +1,67 @@
 #include "TestComponent.h"
 #include "imgui.h"
+#include "GameObject.h"
+#include "MeshRendererComponent.h"
 
 TestComponent::TestComponent(GameObject* ownerGameObject) 
-	:Component(ownerGameObject, ComponentType::TEST)
+	:Component("Test Component", ownerGameObject, ComponentType::TEST)
 {
 	
 }
 
-TestComponent::TestComponent(const TestComponent& original)
-	:Component(original.GetOwner(), ComponentType::TEST)
-{
-	
-}
-
-void TestComponent::Draw()
+TestComponent::TestComponent(const TestComponent& original, GameObject* owner)
+	:Component(original.mName, owner, ComponentType::TEST)
 {
 
 }
-
-void TestComponent::Load()
-{
-    LoadVBO();
+void TestComponent::Reset() {
+	//Change variables to default values.
+	number = 0;
 }
 
 void TestComponent::Update()
 {
-    Draw();
+	MeshRendererComponent* c = nullptr;
+		//c = mOwner->GetComponent<MeshRendererComponent>();
+	c = (MeshRendererComponent*)mOwner->GetComponent(ComponentType::MESHRENDERER);
 }
 
 void TestComponent::DrawEditor()
 {
-	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen)) {
-		// SIMULATED CONTENT FOR TEST PURPOSES:
-		ImGui::Text("Color: (R: 255, G: 0, B: 0) (TEST)");
-		ImGui::Text("Texture: DefaultTexture (TEST)");
+	
+	if (IsComponentOpen()) {
+		RightClickPopup(); //Required for the right click popup to work
+		ImGui::Text("Demo Text");
+		ImGui::Text("Demo Text 2 ");
+	}
+	else {
+		RightClickPopup();
+	}
+}
+
+Component* TestComponent::Clone(GameObject* owner)
+{
+    return new TestComponent(*this, owner); //Calls the copy contrustctor of your component
+}
+
+void TestComponent::RightClickPopup()
+{
+	Component::RightClickPopup(); //Required for the right click popup to work
+
+
+	//Here Add Custom ImGui for your component RightClick Menu
+	if (ImGui::BeginPopup(mPopupID)) {
+		if (ImGui::MenuItem("Custom Test Component Option")) {
+			ImGui::CloseCurrentPopup();
+		}
+		if (ImGui::MenuItem("Custom Test Component Option 2")) {
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
 	}
 
-	if (this->GetOwner()) {
-		this->GetOwner()->DeletePopup(this, 38);
-	}
 }
 
-Component* TestComponent::Clone()
-{
-    return new TestComponent(*this);
-}
 
-void TestComponent::LoadVBO()
-{
 
-}
 
-void TestComponent::LoadEBO()
-{
-}
-
-void TestComponent::LoadVAO()
-{
-}

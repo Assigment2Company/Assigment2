@@ -18,6 +18,9 @@ public:
 
 	~GameObject();
 
+	//template<class T>
+	//T* GetComponent();
+	Component* GetComponent(ComponentType type);
 	void RecalculateMatrices();
 	void Update();
 	void DrawInspector();
@@ -29,7 +32,7 @@ public:
 	
 	const float4x4& GetWorldTransform() const { return mWorldTransformMatrix; }
 	const float4x4& GetLocalTransform() const { return mLocalTransformMatrix; }
-	const Quat& GetRotation() const { return mRotation; }
+	const float3& GetRotation() const { return mRotation; }
 	const float3& GetPosition() const { return mPosition; }
 	const float3& GetScale() const { return mScale; }
 	GameObject* GetParent() const { return mParent; }
@@ -40,38 +43,38 @@ public:
 	const unsigned int GetID() const { return mID; }
 	const bool IsRoot() const { return mIsRoot; }
 	void DeleteChild(GameObject* child);
+	void AddComponentToDelete(Component* component);
 
-	void SetRotation(const Quat& rotation);
+	void SetRotation(const float3& rotation);
 	void SetPosition(const float3& position);
 	void SetScale(const float3& scale);
 
 	void CreateComponent(ComponentType type);
-	void DeletePopup(Component* component, int headerPosition);
 
 private:
-	void MoveChild(const int id, GameObject* newParent, const int aboveThisId = 0);
-	void AddSufix();
-	void DragAndDrop();
+	GameObject* RemoveChild(const int id);
+	void AddSuffix();
+	void DragAndDropSource();
+	void DragAndDropTarget(bool reorder = false);
+	void DrawTransform();
+	void AddComponentButton();
+	void DeleteComponents();
 	std::vector<GameObject*> mChildren;
 	GameObject* mParent = nullptr;
 	std::vector<Component*> mComponents;
+	std::vector<Component*> mComponentsToDelete;
 	const unsigned int mID;
-	std::string mName;
-	float4x4 mWorldTransformMatrix;
-	float4x4 mLocalTransformMatrix;
-	const bool mIsRoot;
-	float3 mPosition;
-	Quat mRotation;
-	float3 mScale;
-	bool mIsEnabled;
+	std::string mName = "Game Object";
+	float4x4 mWorldTransformMatrix = float4x4::identity;
+	float4x4 mLocalTransformMatrix = float4x4::identity;
+	const bool mIsRoot = false;
+	float3 mPosition = float3::zero;
+	float3 mRotation = float3::zero;
+	float3 mScale = float3::one;
+	bool mIsEnabled = true;
 
-	int componentIndex;
+	int componentIndex = 0;
 
-	void DrawTransform();
-	void AddComponentButton();
-	void ShowComponents(Component* component);
-	void DrawMeshRenderer(Component* component);
-	void DrawMaterial(Component* component);
-	void RemoveComponent(Component* component);
+	
 };
 

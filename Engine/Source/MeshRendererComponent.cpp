@@ -1,23 +1,26 @@
 #include "MeshRendererComponent.h"
 #include "imgui.h"
 
-
-MeshRendererComponent::MeshRendererComponent(GameObject* ownerGameObject) 
-	:Component(ownerGameObject, ComponentType::MESHRENDERER)
+MeshRendererComponent::MeshRendererComponent(GameObject* owner) 
+	:Component("Mesh Renderer" , owner, ComponentType::MESHRENDERER)
 {
-	
+
 }
 
-MeshRendererComponent::MeshRendererComponent(const MeshRendererComponent& original)
-	:Component(original.GetOwner(), ComponentType::MESHRENDERER)
+MeshRendererComponent::MeshRendererComponent(const MeshRendererComponent& original, GameObject* owner)
+	:Component(original.mName , owner, ComponentType::MESHRENDERER)
 {
+
 }
 
 void MeshRendererComponent::Draw()
 {
 
 }
+void MeshRendererComponent::Reset()
+{
 
+}
 void MeshRendererComponent::Load()
 {
 	LoadVBO();
@@ -30,20 +33,21 @@ void MeshRendererComponent::Update()
 
 void MeshRendererComponent::DrawEditor()
 {
-	if (ImGui::CollapsingHeader("MeshRenderer", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+	if (IsComponentOpen()) {
+		RightClickPopup();
 		ImGui::Text("Model: Cube.obj (TEST)");
 		ImGui::Text("Material: DefaultMaterial (TEST)");
 		ImGui::Text("Shader: StandardShader (TEST)");
 	}
-
-	if (this->GetOwner()) {
-		this->GetOwner()->DeletePopup(this, 55);
+	else {
+		RightClickPopup();
 	}
 }
 
-Component* MeshRendererComponent::Clone()
+Component* MeshRendererComponent::Clone(GameObject* owner)
 {
-	return new MeshRendererComponent(*this);
+	return new MeshRendererComponent(*this, owner);
 }
 
 void MeshRendererComponent::LoadVBO()
@@ -58,3 +62,22 @@ void MeshRendererComponent::LoadEBO()
 void MeshRendererComponent::LoadVAO()
 {
 }
+
+void MeshRendererComponent::RightClickPopup()
+{
+	Component::RightClickPopup();
+	
+	if (ImGui::BeginPopup(mPopupID)) {
+		if (ImGui::MenuItem("Custom MeshRendererComponent Option")) {
+			ImGui::CloseCurrentPopup();
+		}
+		if (ImGui::MenuItem("Custom MeshRendererComponent Option")) {
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
+	}
+
+
+}
+
+

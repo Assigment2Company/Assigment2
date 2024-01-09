@@ -10,28 +10,27 @@
 
 #include "MeshRendererComponent.h"
 #include "TestComponent.h"
+#include <MathFunc.h>
 
 GameObject::GameObject(GameObject* parent)
-	:mID((new LCG())->Int()), mName("GameObject"), mParent(parent),
-	mIsRoot(parent == nullptr), mIsEnabled(true), mWorldTransformMatrix(float4x4::zero),
-	mLocalTransformMatrix(float4x4::zero), mPosition(float3::zero), mScale(float3::zero),
-	mRotation(Quat::identity)
+	:mID(LCG().Int()), mName("GameObject"), mParent(parent),
+	mIsRoot(parent == nullptr)
 {
 	if (!mIsRoot) {
 		mWorldTransformMatrix = mParent->GetWorldTransform();
 	}
 
-	AddSufix();
+	AddSuffix();
 }
 
 GameObject::GameObject(const GameObject& original)
-	:mID((new LCG())->Int()), mName(original.mName), mParent(original.mParent),
-	mIsRoot(false), mIsEnabled(original.mIsEnabled), mWorldTransformMatrix(original.mWorldTransformMatrix),
+	:mID(LCG().Int()), mName(original.mName), mParent(original.mParent),
+	mIsRoot(original.mIsRoot), mIsEnabled(original.mIsEnabled), mWorldTransformMatrix(original.mWorldTransformMatrix),
 	mLocalTransformMatrix(original.mLocalTransformMatrix), mPosition(original.mPosition), mScale(original.mScale),
 	mRotation(original.mRotation)
 {
 
-	AddSufix();
+	AddSuffix();
 
 	for (auto child : original.mChildren) {
 		GameObject* gameObject = new GameObject(*(child), this);
@@ -40,12 +39,12 @@ GameObject::GameObject(const GameObject& original)
 	}
 
 	for (auto component : original.mComponents) {
-		mComponents.push_back(component->Clone());
+		mComponents.push_back(component->Clone(this));
 	}
 }
 
 GameObject::GameObject(const GameObject& original, GameObject* newParent)
-	:mID((new LCG())->Int()), mName(original.mName), mParent(newParent),
+	:mID(LCG().Int()), mName(original.mName), mParent(newParent),
 	mIsRoot(original.mIsRoot), mIsEnabled(original.mIsEnabled), mWorldTransformMatrix(original.mWorldTransformMatrix),
 	mLocalTransformMatrix(original.mLocalTransformMatrix), mPosition(original.mPosition), mScale(original.mScale),
 	mRotation(original.mRotation)
@@ -58,15 +57,13 @@ GameObject::GameObject(const GameObject& original, GameObject* newParent)
 	}
 
 	for (auto component : original.mComponents) {
-		mComponents.push_back(component->Clone());
+		mComponents.push_back(component->Clone(this));
 	}
 }
 
 GameObject::GameObject(const char* name, GameObject* parent)
-	:mID((new LCG())->Int()), mName(name), mParent(parent),
-	mIsRoot(parent == nullptr), mIsEnabled(true), mWorldTransformMatrix(float4x4::zero),
-	mLocalTransformMatrix(float4x4::zero), mPosition(float3::zero), mScale(float3::zero),
-	mRotation(Quat::identity)
+	:mID(LCG().Int()), mName(name), mParent(parent),
+	mIsRoot(parent == nullptr)
 {
 
 	if (!mIsRoot) {
@@ -90,9 +87,32 @@ GameObject::~GameObject()
 
 }
 
+
+/*template<class T>
+T* GameObject::GetComponent() {
+	T& GameObject::GetComponent() {
+		for (auto&& component : components) {
+			if (component->IsClassType(T::Type))
+				return *static_cast<T*>(component.get());
+		}
+
+		return *std::unique_ptr<T>(nullptr);
+	}
+}
+*/
+Component* GameObject::GetComponent(ComponentType type)
+{
+	for (auto component : mComponents) {
+		if (component->GetType() == type) {
+			return component;
+		}
+	}
+	return nullptr;
+}
+
 void GameObject::RecalculateMatrices()
 {
-	mLocalTransformMatrix = float4x4::FromTRS(mPosition, mRotation, mScale);
+	mLocalTransformMatrix = float4x4::FromTRS(mPosition, Quat::FromEulerXYZ(DegToRad(mRotation.x), DegToRad(mRotation.y), DegToRad(mRotation.z)), mScale);
 
 	mWorldTransformMatrix = mParent->GetWorldTransform() * mLocalTransformMatrix;
 
@@ -112,6 +132,15 @@ void GameObject::Update()
 	for (size_t i = 0; i < mChildren.size(); i++) {
 		mChildren[i]->Update();
 	}
+
+	DeleteComponents();
+}
+
+void GameObject::ResetTransform()
+{
+	mPosition = { 0,0,0 };
+	mScale = { 1,1,1 };
+	mRotation = { 0,0,0 };
 }
 
 void GameObject::ResetTransform()
@@ -129,7 +158,13 @@ void GameObject::DeleteChild(GameObject* child)
 	child = nullptr;
 }
 
-void GameObject::SetRotation(const Quat& rotation)
+void GameObject::AddComponentToDelete(Component* component)
+{
+	mComponentsToDelete.push_back(component);
+}
+
+
+void GameObject::SetRotation(const float3& rotation)
 {
 	mRotation = rotation;
 	RecalculateMatrices();
@@ -147,116 +182,6 @@ void GameObject::SetScale(const float3& scale)
 	RecalculateMatrices();
 }
 
-void GameObject::DrawInspector() {
-	char nameArray[100];
-	strcpy_s(nameArray, mName.c_str());
-	ImGui::InputText("##rename", nameArray, IM_ARRAYSIZE(nameArray));
-	mName = nameArray;
-	DrawTransform();
-
-	componentIndex = 0;
-
-	for (Component* component : mComponents) {
-		component->DrawEditor();
-	}
-
-	ImGui::Separator();
-	AddComponentButton();
-}
-
-void GameObject::DrawHierarchy(const int selected)
-{
-	bool nodeOpen = true;
-	if (!mIsRoot) {
-		ImGui::Separator();
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TREENODE"))
-			{
-				const GameObject* movedObject = (const GameObject*)payload->Data;
-				movedObject->mParent->MoveChild(movedObject->GetID(), this->mParent, mID);
-			}
-			ImGui::EndDragDropTarget();
-		}
-		ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
-		if (mID == selected)
-			baseFlags |= ImGuiTreeNodeFlags_Selected;
-		if (mChildren.size() == 0) {
-			baseFlags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-		}
-		nodeOpen = ImGui::TreeNodeEx((void*)(intptr_t)mID, baseFlags, mName.c_str()) && (mChildren.size() > 0);
-		if (ImGui::IsItemClicked(ImGuiMouseButton_Left) && !ImGui::IsItemToggledOpen()) {
-			App->GetScene()->SetSelectedObject(this);
-		}
-		if (ImGui::IsItemClicked(ImGuiMouseButton_Right) && !ImGui::IsItemToggledOpen()) {
-			App->GetScene()->SetSelectedObject(this);
-		}
-		OnRightClick();
-		DragAndDrop();
-
-	}
-	if (nodeOpen) {
-		for (auto child : mChildren) {
-			child->DrawHierarchy(selected);
-		}
-	
-		if (!mIsRoot) {
-			ImGui::TreePop(); 
-		}
-	}
-	if (mIsRoot) {
-		ImGui::Separator();
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TREENODE"))
-			{
-				const GameObject* movedObject = (const GameObject*)payload->Data;
-				movedObject->mParent->MoveChild(movedObject->GetID(), this);
-			}
-			ImGui::EndDragDropTarget();
-		}
-	}
-
-	
-
-}
-
-
-
-void GameObject::OnRightClick() {
-	ImGui::PushID(mID);
-	if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
-
-		ImGui::OpenPopup("OptionsGO");
-	}
-	if (ImGui::BeginPopup("OptionsGO")) {
-		if (ImGui::Selectable("Create GameObject")) {
-				GameObject* gameObject = new GameObject(this);
-				AddChild(gameObject);
-				App->GetScene()->SetSelectedObject(gameObject);
-		}
-
-		if (!mIsRoot) {
-			if (ImGui::Selectable("Duplicate")) {
-				GameObject* gameObject = new GameObject(*this);
-				//mParent->AddChild(gameObject);
-				App->GetScene()->AddGameObjectToDuplicate(gameObject);
-				App->GetScene()->SetSelectedObject(gameObject);
-			}
-		}
-
-		if (!mIsRoot) {
-			if (ImGui::Selectable("Delete")) {
-				App->GetScene()->AddGameObjectToDelete(this);
-				App->GetScene()->SetSelectedObject(App->GetScene()->GetRoot());
-			}
-		}
-		ImGui::EndPopup();
-	}
-	ImGui::PopID();
-}
-
-
 void GameObject::AddChild(GameObject* child, const int aboveThisId)
 {
 	child->mParent = this;
@@ -271,49 +196,30 @@ void GameObject::AddChild(GameObject* child, const int aboveThisId)
 			}
 		}
 	}
+
+	child->mLocalTransformMatrix = mWorldTransformMatrix.Inverted() * child->mWorldTransformMatrix;
+
 	if (!inserted) {
 		mChildren.push_back(child);
 	}
 }
 
-void GameObject::MoveChild(const int id, GameObject* newParent, const int aboveThisId)
+GameObject* GameObject::RemoveChild(const int id)
 {
-	if (mID == newParent->mID) { //Movement inside same object
-		if (id == aboveThisId) { return; }
-		std::vector<GameObject*>::iterator itMovedObject;
-		std::vector<GameObject*>::iterator itTargetPosition = mChildren.end();
-		for (auto it = mChildren.begin(); it != mChildren.cend(); ++it) {
-			if ((*it)->GetID() == id) {
-				itMovedObject = it;
-			}
-			else if ((*it)->GetID() == aboveThisId) {
-				itTargetPosition = it;
-			}
-		}
-		if (itMovedObject != mChildren.end()) {
-			if (itMovedObject < itTargetPosition) {
-				if (itMovedObject + 1 == itTargetPosition) { return; }
-				std::rotate(itMovedObject, itMovedObject + 1, itTargetPosition);
-			}
-			else if (itMovedObject > itTargetPosition) {
-				std::rotate(itTargetPosition, itMovedObject, itMovedObject + 1);
-			}
+	GameObject* movedObject = nullptr;
+	std::vector<GameObject*>::iterator itTargetPosition = mChildren.end();
+	for (auto it = mChildren.begin(); it != mChildren.cend(); ++it) {
+		if ((*it)->GetID() == id) {
+			movedObject = *it;
+			mChildren.erase(it);
+			break;
 		}
 	}
-	else {
-		for (auto it = mChildren.cbegin(); it != mChildren.cend(); ++it)
-		{
-			if ((*it)->GetID() == id)
-			{
-				newParent->AddChild(*it, aboveThisId);
-				mChildren.erase(it);
-				break;
-			}
-		}
-	}
+	return movedObject;
+
 }
 
-void GameObject::AddSufix()
+void GameObject::AddSuffix()
 {
 	bool found = true;
 	int count = 1;
@@ -321,11 +227,13 @@ void GameObject::AddSufix()
 	while (found) {
 		std::string str = " (" + std::to_string(count) + ')';
 		int pos = std::string::npos;
+
+		std::string nameWithSufix = mName + str;
 		for (auto gameObject : mParent->mChildren)
 		{
 			if (pos == -1) {
 				//pos = gameObject->mName.find(str, gameObject->mName.size() - 4);
-				pos = gameObject->mName.find(mName + str);
+				pos = gameObject->mName.find(nameWithSufix);
 			}
 
 		}
@@ -342,11 +250,45 @@ void GameObject::AddSufix()
 		}
 
 	}
-
-
 }
 
-void GameObject::DragAndDrop()
+void GameObject::CreateComponent(ComponentType type) {
+	Component* newComponent = nullptr;
+
+	switch (type) {
+		case ComponentType::MESHRENDERER:
+			newComponent = new MeshRendererComponent(this);
+			break;
+		case ComponentType::TEST:    
+			newComponent = new TestComponent(this);
+			break;
+		default:
+			break;
+	}
+
+	if (newComponent) {
+		mComponents.push_back(newComponent);
+	}
+}
+
+void GameObject::DeleteComponents() {
+	for (auto component : mComponentsToDelete)
+	{
+		auto it = std::find(mComponents.begin(), mComponents.end(), component);
+		if (it != mComponents.end()) {
+			mComponents.erase(it);
+			delete component;
+			component = nullptr;
+		}
+	}
+}
+
+/******************************************************************************
+ ***						GUI DRAWING FUNCTIONS							***
+ ******************************************************************************/
+
+
+void GameObject::DragAndDropSource()
 {
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 	{
@@ -355,25 +297,44 @@ void GameObject::DragAndDrop()
 		ImGui::Text(mName.c_str());
 		ImGui::EndDragDropSource();
 	}
+
+}
+
+void GameObject::DragAndDropTarget(bool reorder) {
 	if (ImGui::BeginDragDropTarget())
 	{
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TREENODE"))
 		{
+			bool isParent = false;
 			const GameObject* movedObject = (const GameObject*)payload->Data;
-			movedObject->mParent->MoveChild(movedObject->GetID(), this);
+
+			GameObject* parent = mParent;
+
+			while (parent != nullptr) {
+				if (parent->mID == movedObject->mID) {
+					isParent = true;
+				}
+				parent = parent->mParent;
+			}
+
+			if (!isParent) {
+				GameObject* pMovedObject = movedObject->mParent->RemoveChild(movedObject->GetID());
+				if (reorder) { mParent->AddChild(pMovedObject, mID); }
+				else { AddChild(pMovedObject); }
+			}
+
 		}
 		ImGui::EndDragDropTarget();
 	}
 }
 
 void GameObject::DrawTransform() {
-	bool headerOpen = ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth |
-		ImGuiTreeNodeFlags_AllowItemOverlap);
+	bool headerOpen = ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_AllowItemOverlap);
 	ImGui::SameLine(ImGui::GetItemRectSize().x - 50.0f);
 	ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(4 / 7.0f, 0.6f, 0.6f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(4 / 7.0f, 0.7f, 0.7f));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(4/ 7.0f, 0.8f, 0.8f));
-	if (ImGui::SmallButton("Config")) {
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(4 / 7.0f, 0.8f, 0.8f));
+	if (ImGui::SmallButton("Config##transform")) {
 		ImGui::OpenPopup("TransformOptions");
 	}
 	if (ImGui::BeginPopup("TransformOptions")) {
@@ -402,7 +363,7 @@ void GameObject::DrawTransform() {
 			ImGui::PopID();
 
 			ImGui::TableNextRow();
-			ImGui::PushID(mID+1);
+			ImGui::PushID(mID + 1);
 			ImGui::TableSetColumnIndex(0);
 			ImGui::Text("Rotation");
 			ImGui::TableSetColumnIndex(1);
@@ -416,7 +377,7 @@ void GameObject::DrawTransform() {
 			ImGui::PopID();
 
 			ImGui::TableNextRow();
-			ImGui::PushID(mID+2);
+			ImGui::PushID(mID + 2);
 			ImGui::TableSetColumnIndex(0);
 			ImGui::Text("Scale");
 			ImGui::TableSetColumnIndex(1);
@@ -478,61 +439,98 @@ void GameObject::AddComponentButton() {
 	}
 }
 
-void GameObject::CreateComponent(ComponentType type) {
-	Component* newComponent = nullptr;
+void GameObject::DrawInspector() {
+	char nameArray[100];
+	strcpy_s(nameArray, mName.c_str());
+	ImGui::PushID(mID);
+	ImGui::InputText("##rename", nameArray, IM_ARRAYSIZE(nameArray));
+	ImGui::PopID();
+	mName = nameArray;
+	DrawTransform();
 
-	switch (type) {
-		case ComponentType::MESHRENDERER:
-			newComponent = new MeshRendererComponent(this);
-			break;
-		case ComponentType::TEST:    
-			newComponent = new TestComponent(this);
-			break;
-		default:
-			break;
+	componentIndex = 0;
+
+	for (Component* component : mComponents) {
+		component->DrawEditor();
 	}
 
-	if (newComponent) {
-		mComponents.push_back(newComponent);
-	}
+	ImGui::Separator();
+	AddComponentButton();
 }
 
-void GameObject::DeletePopup(Component* component, int headerPosition) {
-	ImGui::PushID(componentIndex); // Work correctly without this function, its necessary?
+void GameObject::DrawHierarchy(const int selected)
+{
+	bool nodeOpen = true;
+	if (!mIsRoot) {
+		ImGui::Separator();
+		DragAndDropTarget(true);
+		ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+		if (mID == selected)
+			baseFlags |= ImGuiTreeNodeFlags_Selected;
+		if (mChildren.size() == 0) {
+			baseFlags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+		}
+		nodeOpen = ImGui::TreeNodeEx((void*)(intptr_t)mID, baseFlags, mName.c_str()) && (mChildren.size() > 0);
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Left) && !ImGui::IsItemToggledOpen()) {
+			App->GetScene()->SetSelectedObject(this);
+		}
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Right) && !ImGui::IsItemToggledOpen()) {
+			App->GetScene()->SetSelectedObject(this);
+		}
+		OnRightClick();
+		DragAndDropSource();
+	}
+	else {
+		nodeOpen = ImGui::CollapsingHeader(mName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_AllowItemOverlap);
+	}
+	DragAndDropTarget();
+	if (nodeOpen) {
+		for (auto child : mChildren) {
+			child->DrawHierarchy(selected);
+		}
 
-	std::string popupID = "ComponentOptions_" + std::to_string(componentIndex);
-
-	ImVec2 min = ImGui::GetItemRectMin();
-	ImVec2 max = ImGui::GetItemRectMax();
-
-	min.y -= ImGui::GetStyle().FramePadding.y + headerPosition;
-	max.y += ImGui::GetStyle().FramePadding.y - headerPosition;
-
-	if (ImGui::IsMouseHoveringRect(min, max) && ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
-		ImGui::OpenPopup(popupID.c_str());
+		if (!mIsRoot) {
+			ImGui::TreePop();
+		}
+	}
+	if (mIsRoot) {
+		ImGui::Separator();
+		DragAndDropTarget();
 	}
 
-	if (ImGui::BeginPopupContextItem(popupID.c_str())) {
-		ImGui::OpenPopup(popupID.c_str());
-		ImGui::EndPopup();
-	}
+}
 
-	if (ImGui::BeginPopup(popupID.c_str())) {
-		if (ImGui::MenuItem("Delete Component")) {
-			RemoveComponent(component);
-			ImGui::CloseCurrentPopup();
+
+
+void GameObject::OnRightClick() {
+	ImGui::PushID(mID);
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+
+		ImGui::OpenPopup("OptionsGO");
+	}
+	if (ImGui::BeginPopup("OptionsGO")) {
+		if (ImGui::Selectable("Create GameObject")) {
+			GameObject* gameObject = new GameObject(this);
+			AddChild(gameObject);
+			App->GetScene()->SetSelectedObject(gameObject);
+		}
+
+		if (!mIsRoot) {
+			if (ImGui::Selectable("Duplicate")) {
+				GameObject* gameObject = new GameObject(*this);
+				//mParent->AddChild(gameObject);
+				App->GetScene()->AddGameObjectToDuplicate(gameObject);
+				App->GetScene()->SetSelectedObject(gameObject);
+			}
+		}
+
+		if (!mIsRoot) {
+			if (ImGui::Selectable("Delete")) {
+				App->GetScene()->AddGameObjectToDelete(this);
+				App->GetScene()->SetSelectedObject(App->GetScene()->GetRoot());
+			}
 		}
 		ImGui::EndPopup();
 	}
-
 	ImGui::PopID();
-	componentIndex++;
-}
-
-void GameObject::RemoveComponent(Component* component) {
-	auto it = std::find(mComponents.begin(), mComponents.end(), component);
-	if (it != mComponents.end()) {
-		mComponents.erase(it);
-		delete component;
-	}
 }
