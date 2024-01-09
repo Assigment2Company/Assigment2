@@ -17,15 +17,42 @@ uniform vec3 ambientColor;
 uniform sampler2D diffuseTexture; 	//Bind (0)
 uniform sampler2D specularTexture; 	//Bind (1)
 
+//In case there is no diffuse, specular or shininess map
+uniform vec3 materialDiffuseColor;
+uniform vec3 materialSpecularColor;
+uniform float indexRefraction;
+uniform int materialShininess;
+
+uniform bool hasDiffuseMap;
+uniform bool hasSpecularMap;
+uniform bool hasShininessMap;
+
+vec3 diffuseColor;
+vec3 specularColor;
+float shininess;
+
 out vec4 outColor;
 
 void main() {
-	
-	//Using  gamma correction forces to transform sRGB textures to linear space
-	vec3 diffuseColor = pow(vec3(texture(diffuseTexture, uv0)), vec3(2.2)); //Diffuse color
-	vec3 specularColor = pow(vec3(texture(specularTexture, uv0)),vec3(2.2)); //Specular map
-	
-	float shininess = exp2(15*texture(specularTexture, uv0).a+1);
+
+	//Diffuse
+	if(hasDiffuseMap){//Using  gamma correction forces to transform sRGB textures to linear space
+		diffuseColor = pow(vec3(texture(diffuseTexture, uv0)), vec3(2.2)); //Diffuse color
+	}else{
+		diffuseColor = materialDiffuseColor;
+	}
+	//Specular
+	if(hasSpecularMap){//Using  gamma correction forces to transform sRGB textures to linear space
+		specularColor = pow(vec3(texture(specularTexture, uv0)),vec3(2.2)); //Specular map
+	}else{
+		specularColor = materialSpecularColor*pow((indexRefraction-1)/(indexRefraction+1), 2);
+	}
+	//Shininess
+	if(hasShininessMap){
+		shininess = exp2(15*texture(specularTexture, uv0).a+1);
+	}else{
+		shininess = materialShininess;
+	}
 	
 	vec3 N = -normalize(normal);  	//Normal
 	vec3 L =  normalize(lightDir); 	//Light direction

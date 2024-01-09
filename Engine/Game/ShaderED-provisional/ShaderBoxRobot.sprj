@@ -88,6 +88,7 @@
 				<variable type="float4x4" name="proj" system="Projection" />
 				<variable type="float4x4" name="view" system="View" />
 				<variable type="float4x4" name="model" system="GeometryTransform" />
+				<variable type="float3" name="cameraPos" system="CameraPosition3" />
 				<variable type="float3" name="lightDir">
 					<row>
 						<value>-0.5</value>
@@ -95,7 +96,6 @@
 						<value>-0.5</value>
 					</row>
 				</variable>
-				<variable type="float3" name="cameraPos" system="CameraPosition3" />
 				<variable type="float" name="lightIntensity">
 					<row>
 						<value>1.5</value>
@@ -110,9 +110,48 @@
 				</variable>
 				<variable type="float3" name="ambientColor">
 					<row>
-						<value>0.705017269</value>
-						<value>0.705024302</value>
-						<value>0.705017269</value>
+						<value>0.791497886</value>
+						<value>0.791505814</value>
+						<value>0.791497886</value>
+					</row>
+				</variable>
+				<variable type="bool" name="hasDiffuseMap">
+					<row>
+						<value>true</value>
+					</row>
+				</variable>
+				<variable type="bool" name="hasSpecularMap">
+					<row>
+						<value>true</value>
+					</row>
+				</variable>
+				<variable type="bool" name="hasShininessMap">
+					<row>
+						<value>true</value>
+					</row>
+				</variable>
+				<variable type="int" name="materialShininess">
+					<row>
+						<value>500</value>
+					</row>
+				</variable>
+				<variable type="float" name="indexRefraction">
+					<row>
+						<value>1</value>
+					</row>
+				</variable>
+				<variable type="float3" name="materialDiffuseColor">
+					<row>
+						<value>0.359595925</value>
+						<value>0.0907261148</value>
+						<value>0.691119671</value>
+					</row>
+				</variable>
+				<variable type="float3" name="materialSpecularColor">
+					<row>
+						<value>0.436293423</value>
+						<value>0.436289042</value>
+						<value>0.436289042</value>
 					</row>
 				</variable>
 			</variables>
@@ -138,19 +177,23 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="file" name="Shader_Box" shader="ps" />
-		<entry type="file" name="Shader_Box" shader="vs" />
 		<entry type="file" name="Shader_Robot" shader="ps" />
-		<entry type="pinned" name="shininess" owner="Shader_Box" />
-		<entry type="pinned" name="indexRefraction" owner="Shader_Box" />
+		<entry type="file" name="Shader_Box" shader="ps" />
 		<entry type="pinned" name="lightDir" owner="Shader_Robot" />
 		<entry type="pinned" name="lightIntensity" owner="Shader_Robot" />
 		<entry type="pinned" name="lightColor" owner="Shader_Robot" />
 		<entry type="pinned" name="ambientColor" owner="Shader_Robot" />
+		<entry type="pinned" name="hasDiffuseMap" owner="Shader_Robot" />
+		<entry type="pinned" name="hasSpecularMap" owner="Shader_Robot" />
+		<entry type="pinned" name="hasShininessMap" owner="Shader_Robot" />
+		<entry type="pinned" name="materialShininess" owner="Shader_Robot" />
+		<entry type="pinned" name="indexRefraction" owner="Shader_Robot" />
+		<entry type="pinned" name="materialDiffuseColor" owner="Shader_Robot" />
+		<entry type="pinned" name="materialSpecularColor" owner="Shader_Robot" />
 		<entry type="camera" fp="false">
-			<distance>8</distance>
-			<pitch>38</pitch>
-			<yaw>188</yaw>
+			<distance>13</distance>
+			<pitch>55</pitch>
+			<yaw>195</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
