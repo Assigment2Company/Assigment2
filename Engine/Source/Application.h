@@ -47,8 +47,8 @@ private:
     ModuleRenderTest* test = nullptr;
     ModuleDebugDraw* debugDraw = nullptr;
 
-
-    std::vector<Module*> modules;
+#define NUM_MODULES 8
+    Module* modules[NUM_MODULES];
 
 };
 

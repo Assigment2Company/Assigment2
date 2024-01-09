@@ -14,23 +14,22 @@
 Application::Application()
 {
 	// Order matters: they will Init/start/update in this order
-	modules.reserve(8);
-	modules.push_back(window = new ModuleWindow());
-	modules.push_back(render = new ModuleOpenGL());
-	modules.push_back(input = new ModuleInput());
-	modules.push_back(scene = new ModuleScene());
-	modules.push_back(test = new ModuleRenderTest());
-	modules.push_back(editor = new ModuleEditor());
-	modules.push_back(camera = new ModuleCamera());
-	modules.push_back(debugDraw = new ModuleDebugDraw());
-
+	modules[0] = window = new ModuleWindow();
+	modules[1] = render = new ModuleOpenGL();
+	modules[2] = input = new ModuleInput();
+	modules[3] = scene = new ModuleScene();
+	modules[4] = test = new ModuleRenderTest();
+	modules[5] = editor = new ModuleEditor();
+	modules[6] = camera = new ModuleCamera();
+	modules[7] = debugDraw = new ModuleDebugDraw();
 }
 
 Application::~Application()
 {
-	for(std::vector<Module*>::iterator it = modules.begin(); it != modules.end(); ++it)
+	for(int i = 0; i != NUM_MODULES; ++i)
     {
-        delete *it;
+        delete modules[i];
+		modules[i] = nullptr;
     }
 }
 
@@ -38,8 +37,8 @@ bool Application::Init()
 {
 	bool ret = true;
 
-	for(std::vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
-		ret = (*it)->Init();
+	for(int i = 0; i != NUM_MODULES; ++i)
+		ret = modules[i]->Init();
 
 	return ret;
 }
@@ -48,14 +47,14 @@ update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 
-	for(std::vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
-		ret = (*it)->PreUpdate();
+	for (int i = 0; i != NUM_MODULES; ++i)
+		ret = modules[i]->PreUpdate();
 
-	for(std::vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
-		ret = (*it)->Update();
+	for (int i = 0; i != NUM_MODULES; ++i)
+		ret = modules[i]->Update();
 
-	for(std::vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
-		ret = (*it)->PostUpdate();
+	for (int i = 0; i != NUM_MODULES; ++i)
+		ret = modules[i]->PostUpdate();
 
 	return ret;
 }
@@ -64,8 +63,8 @@ bool Application::CleanUp()
 {
 	bool ret = true;
 
-	for(std::vector<Module*>::reverse_iterator it = modules.rbegin(); it != modules.rend() && ret; ++it)
-		ret = (*it)->CleanUp();
+	for (int i = 0; i != NUM_MODULES; ++i)
+		ret = modules[i]->CleanUp();
 
 	return ret;
 }
