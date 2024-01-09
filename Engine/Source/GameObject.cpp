@@ -143,12 +143,6 @@ void GameObject::ResetTransform()
 	mRotation = { 0,0,0 };
 }
 
-void GameObject::ResetTransform()
-{
-	mPosition = { 0,0,0 };
-	mScale = { 0,0,0 };
-	mRotation = { 0,0,0,0};
-}
 
 void GameObject::DeleteChild(GameObject* child)
 {
