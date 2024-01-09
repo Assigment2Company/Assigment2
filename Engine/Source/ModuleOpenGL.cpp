@@ -57,12 +57,6 @@ update_status ModuleOpenGL::PreUpdate()
 	return UPDATE_CONTINUE;
 }
 
-// Called every draw update
-update_status ModuleOpenGL::Update()
-{
-	return UPDATE_CONTINUE;
-}
-
 update_status ModuleOpenGL::PostUpdate()
 {
 	SDL_GL_SwapWindow(App->GetWindow()->window);

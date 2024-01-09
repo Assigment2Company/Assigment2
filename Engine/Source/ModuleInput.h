@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _MODULE_INPUT_H_
+#define _MODULE_INPUT_H_
+
 #include "Module.h"
 #include "Globals.h"
 
@@ -32,30 +34,16 @@ public:
 	ModuleInput();
 
 	// Destructor
-	virtual ~ModuleInput();
+	~ModuleInput();
 
-	// Called before render is available
-	bool Init();
-
-	// Called before the first frame
-	bool Start();
-
-	// Called each loop iteration
-	update_status PreUpdate();
-
-	// Called before quitting
-	bool CleanUp();
+	bool Init() override;
+	update_status PreUpdate() override;
+	bool CleanUp() override;
 
 	// Check key states (includes mouse and joy buttons)
-	KeyState GetKey(int id) const
-	{
-		return keyboard[id];
-	}
+	KeyState GetKey(int id) const { return keyboard[id]; }
 
-	KeyState GetMouseButtonDown(int id) const
-	{
-		return mouse_buttons[id - 1];
-	}
+	KeyState GetMouseButtonDown(int id) const { return mouse_buttons[id - 1]; }
 
 	// Check for window events last frame
 	bool GetWindowEvent(EventWindow code) const;
@@ -71,3 +59,5 @@ private:
 	float2 mouse_motion;
 	float2 mouse;
 };
+
+#endif /* _MODULE_INPUT_H_ */
