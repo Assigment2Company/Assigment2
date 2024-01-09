@@ -1,5 +1,5 @@
-#pragma once
-#include <stdio.h>
+#ifndef _GLOBALS_H_
+#define _GLOBALS_H_
 
 #define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 
@@ -27,3 +27,5 @@ enum update_status
 	       x = nullptr;\
 		 }\
 	 }
+
+#endif /* _GLOBALS_H_ */
