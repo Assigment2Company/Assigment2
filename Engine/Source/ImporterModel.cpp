@@ -1,4 +1,6 @@
 #include "Globals.h"
+#include "Application.h"
+#include "ModuleFileSystem.h"
 #include "ImporterModel.h"
 #include "ImporterMesh.h"
 
@@ -11,22 +13,33 @@
 
 void Importer::Model::Import(const char* filePath)
 {
-    //Create GLTF Dupliate
-
-    tinygltf::TinyGLTF gltfContext;
-    tinygltf::Model model;
-    std::string error, warning;
-    bool loadOk = gltfContext.LoadASCIIFromFile(&model, &error, &warning, filePath);
-    if (!loadOk)
-    {
-        LOG("[MODEL] Error loading %s: %s", filePath, error.c_str());
-    }
-
+    //Create GLTF Dupliate REMEMBER .gltf && .bin must have the same name
     std::string modelName = filePath;
     unsigned pos = modelName.find_last_of('/');
     std::string name = modelName.substr(++pos);
     unsigned dotPos = name.find_last_of('.');
-    name = name.substr(0,dotPos);
+    name = name.substr(0, dotPos);
+
+    std::string extension = filePath;
+    unsigned extensionPos = extension.find_last_of('.');
+    extension = extension.substr(0, extensionPos);
+    extension.append(".bin");
+
+    std::string gltfPath = (ASSETS_MODEL_PATH + name + ".gltf");
+    App->GetFileSystem()->Copy(filePath, gltfPath.c_str());
+
+    std::string binPath = (ASSETS_MODEL_PATH + name + ".bin");
+    App->GetFileSystem()->Copy(extension.c_str(), binPath.c_str());
+
+    tinygltf::TinyGLTF gltfContext;
+    tinygltf::Model model;
+
+    std::string error, warning;
+    bool loadOk = gltfContext.LoadASCIIFromFile(&model, &error, &warning, gltfPath);
+    if (!loadOk)
+    {
+        LOG("[MODEL] Error loading %s: %s", gltfPath, error.c_str());
+    }
 
     for (const auto& srcMesh : model.meshes)
     {

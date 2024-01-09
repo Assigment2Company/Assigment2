@@ -19,6 +19,10 @@ ModuleFileSystem::ModuleFileSystem()
         LOG("Error while setting path (%s): %s\n",".", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
     }
 
+    CreateDirectory(ASSETS_PATH);
+    CreateDirectory(ASSETS_MODEL_PATH);
+    CreateDirectory(ASSETS_TEXTURE_PATH);
+
     CreateDirectory(LIBRARY_PATH);
     CreateDirectory(LIBRARY_MESH_PATH);
     CreateDirectory(LIBRARY_TEXTURE_PATH);
@@ -37,8 +41,8 @@ bool ModuleFileSystem::Init()
 {
     //Importer::CreateBinaryFile();
 
-    //Importer::Import("Assets/Models/Triangle/Triangle.gltf");
-    Importer::Import("Shaders/basic.vs");
+    Importer::Import("Assets/Models/Triangle/Triangle.gltf");
+    //Importer::Import("Shaders/basic.vs");
 
     //TODO CREATE LIBRARY FILE SYSTEM FOLDERS
 
@@ -129,6 +133,29 @@ unsigned int ModuleFileSystem::Save(const char* filePath, const void* buffer, un
         }
     }
     return writeBytesSize;
+}
+
+bool ModuleFileSystem::Copy(const char* sourceFilePath, const char* destinationFilePath)
+{
+    char* readBuffer = nullptr;
+    int readBufferSize = Load(sourceFilePath, &readBuffer);
+
+    if (readBufferSize > 0)
+    {
+        int writeBufferSize = Save(destinationFilePath, readBuffer, readBufferSize);
+
+        if (writeBufferSize == 0)
+        {
+            LOG("Error unable to copy into new directory %s", destinationFilePath);
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+   
+    return true;
 }
 
 bool ModuleFileSystem::CreateDirectory(const char* directory)

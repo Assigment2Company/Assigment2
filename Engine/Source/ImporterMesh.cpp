@@ -16,8 +16,8 @@
 
 void Importer::Mesh::Import(const tinygltf::Model& model, const tinygltf::Primitive& primitive, ResourceMesh* mesh)
 {
-
     //Create Duplicate .bin
+    App->GetFileSystem();
 
     const auto& itPos = primitive.attributes.find("POSITION");
     const auto& itTexCoord = primitive.attributes.find("TEXCOORD_0");
@@ -34,7 +34,7 @@ void Importer::Mesh::Import(const tinygltf::Model& model, const tinygltf::Primit
 
         posBuffer.uri;
 
-        App->GetFileSystem()->Load();
+        //App->GetFileSystem()->Copy();
 
         mesh->mNumVertices = posAcc.count;
 
