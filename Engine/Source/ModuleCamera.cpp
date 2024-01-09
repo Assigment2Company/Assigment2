@@ -78,25 +78,25 @@ void ModuleCamera::ProcessInput()
     mousePos = float2((float)x, (float)y);
 
 
-    if (App->GetInput()->GetKey(SDL_SCANCODE_LSHIFT))
+    if (App->GetInput()->GetKey(SDL_SCANCODE_LSHIFT) == KeyState::KEY_REPEAT)
         speed = speed * 2;
-    if (App->GetInput()->GetMouseButtonDown(SDL_BUTTON_RIGHT)) {
+    if (App->GetInput()->GetMouseKey(MouseKey::BUTTON_RIGHT) == KeyState::KEY_REPEAT) {
 
-        if (App->GetInput()->GetKey(SDL_SCANCODE_W))
+        if (App->GetInput()->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT)
             Move(-frustum.front.Normalized() * speed);
 
-        if (App->GetInput()->GetKey(SDL_SCANCODE_S))
+        if (App->GetInput()->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT)
             Move(frustum.front.Normalized() * speed);
 
-        if (App->GetInput()->GetKey(SDL_SCANCODE_A))
+        if (App->GetInput()->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
             Move(frustum.WorldRight().Normalized() * speed);
 
-        if (App->GetInput()->GetKey(SDL_SCANCODE_D))
+        if (App->GetInput()->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
             Move(-frustum.WorldRight().Normalized() * speed);
 
-        if (App->GetInput()->GetKey(SDL_SCANCODE_Q))
+        if (App->GetInput()->GetKey(SDL_SCANCODE_Q) == KeyState::KEY_REPEAT)
             Move(frustum.up.Normalized() * speed);
-        if (App->GetInput()->GetKey(SDL_SCANCODE_E))
+        if (App->GetInput()->GetKey(SDL_SCANCODE_E) == KeyState::KEY_REPEAT)
             Move(-frustum.up.Normalized() * speed);
 
         if (mouse_delta.x != 0)
@@ -104,7 +104,7 @@ void ModuleCamera::ProcessInput()
         if (mouse_delta.y != 0)
             Rotate(mouse_delta.y , frustum.WorldRight());
     }
-    else if (App->GetInput()->GetMouseButtonDown(SDL_BUTTON_LEFT) && App->GetInput()->GetKey(SDL_SCANCODE_LALT)) {
+    else if (App->GetInput()->GetMouseKey(MouseKey::BUTTON_LEFT) == KeyState::KEY_REPEAT && App->GetInput()->GetKey(SDL_SCANCODE_LALT) == KeyState::KEY_REPEAT) {
         
 
         float distanceCameraObject = (float3::zero - frustum.pos).Length();
@@ -121,18 +121,18 @@ void ModuleCamera::ProcessInput()
     }
     else {
 
-        if (App->GetInput()->GetKey(SDL_SCANCODE_UP))
+        if (App->GetInput()->GetKey(SDL_SCANCODE_UP) == KeyState::KEY_REPEAT)
             Rotate(speed * 100, frustum.WorldRight());
-        if (App->GetInput()->GetKey(SDL_SCANCODE_DOWN))
+        if (App->GetInput()->GetKey(SDL_SCANCODE_DOWN) == KeyState::KEY_REPEAT)
             Rotate(-speed * 100, frustum.WorldRight());
-        if (App->GetInput()->GetKey(SDL_SCANCODE_LEFT))
+        if (App->GetInput()->GetKey(SDL_SCANCODE_LEFT) == KeyState::KEY_REPEAT)
             Rotate(speed * 100, float3::unitY);
-        if (App->GetInput()->GetKey(SDL_SCANCODE_RIGHT))
+        if (App->GetInput()->GetKey(SDL_SCANCODE_RIGHT) == KeyState::KEY_REPEAT)
             Rotate(-speed * 100, float3::unitY);
     }
 
 
-    if (App->GetInput()->GetKey(SDL_SCANCODE_F))
+    if (App->GetInput()->GetKey(SDL_SCANCODE_F) == KeyState::KEY_REPEAT)
     {
         //Make this a lookat function Change float3::zero for a float3 input vector
         float3 oldRight = frustum.WorldRight().Normalized();
